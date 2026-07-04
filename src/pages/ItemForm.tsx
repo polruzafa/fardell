@@ -22,7 +22,6 @@ export default function ItemForm() {
   )
   const [tags, setTags] = useState(existing?.tags.join(', ') ?? '')
   const [needs, setNeeds] = useState(existing?.needs?.join(', ') ?? '')
-  const [worn, setWorn] = useState(existing?.worn ?? false)
   const [notes, setNotes] = useState(existing?.notes ?? '')
   const [specs, setSpecs] = useState<{ label: string; value: string }[]>(
     existing?.specs?.map((s) => ({ ...s })) ?? [],
@@ -71,7 +70,6 @@ export default function ItemForm() {
           ? undefined
           : Math.max(0, Math.round(Number(maxLoad.replace(',', '.')) * 1000)),
       needs: cleanNeeds.length > 0 ? cleanNeeds : undefined,
-      worn: worn || undefined,
       specs: cleanSpecs.length > 0 ? cleanSpecs : undefined,
       notes: notes.trim(),
       photo: existing?.photo ?? null,
@@ -174,13 +172,6 @@ export default function ItemForm() {
             onChange={(e) => setNeeds(e.target.value)}
             placeholder={t('form.needsPlaceholder')}
           />
-        </label>
-
-        <label className="check-row">
-          <input type="checkbox" checked={worn} onChange={(e) => setWorn(e.target.checked)} />
-          <span>
-            {t('form.worn')} <span className="hint">{t('form.wornHint')}</span>
-          </span>
         </label>
 
         <fieldset className="specs-editor">

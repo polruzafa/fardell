@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 4,
+  "schemaVersion": 5,
   "categories": [
     {
       "id": "mochilas",
@@ -98,8 +98,7 @@
       "weightGrams": 235,
       "notes": "Pendiente confirmar si el peso es por unidad o por pareja.",
       "photo": null,
-      "placement": "en la mano",
-      "worn": true
+      "placement": "en la mano"
     },
     {
       "id": "forclaz-mt500-air",
@@ -769,8 +768,7 @@
       ],
       "weightGrams": 44,
       "notes": "",
-      "photo": null,
-      "worn": true
+      "photo": null
     },
     {
       "id": "3f-ul-lanshan-1",
@@ -967,8 +965,7 @@
       "tags": [],
       "weightGrams": 110,
       "notes": "",
-      "photo": null,
-      "worn": true
+      "photo": null
     },
     {
       "id": "calzoncillos-licra",
@@ -988,89 +985,141 @@
       "id": "kit-hornillo-lixada",
       "name": "hornillo LIXADA",
       "backpackId": null,
-      "itemIds": [
-        "lixada-slow-alcohol-stove",
-        "lixada-2in1-windscreen"
-      ],
-      "groupIds": []
+      "groupIds": [],
+      "members": [
+        {
+          "id": "lixada-slow-alcohol-stove"
+        },
+        {
+          "id": "lixada-2in1-windscreen"
+        }
+      ]
     },
     {
       "id": "kit-mess-tin",
       "name": "Mess tin",
       "backpackId": null,
-      "itemIds": [
-        "mess-tin-kit",
-        "bamboo-cutting-board",
-        "steamer-rack"
-      ],
-      "groupIds": []
+      "groupIds": [],
+      "members": [
+        {
+          "id": "mess-tin-kit"
+        },
+        {
+          "id": "bamboo-cutting-board"
+        },
+        {
+          "id": "steamer-rack"
+        }
+      ]
     },
     {
       "id": "d72da03e-7516-4a1f-983c-9c26ed478b7c",
       "name": "Arroz",
       "backpackId": null,
-      "itemIds": [
-        "mess-tin-kit",
-        "ise-mount-fuel-bottle"
-      ],
       "groupIds": [
         "kit-hornillo-lixada"
+      ],
+      "members": [
+        {
+          "id": "mess-tin-kit"
+        },
+        {
+          "id": "ise-mount-fuel-bottle"
+        }
       ]
     },
     {
       "id": "1f0c16f9-6d52-416a-b5f4-dcafc70a1d21",
       "name": "Dormir en verano",
       "backpackId": null,
-      "itemIds": [
-        "onewind-quilt",
-        "forclaz-mt500-air",
-        "forclaz-foam-pad",
-        "forclaz-trek-pillow",
-        "hengduan-usb-pump"
-      ],
-      "groupIds": []
+      "groupIds": [],
+      "members": [
+        {
+          "id": "onewind-quilt"
+        },
+        {
+          "id": "forclaz-mt500-air"
+        },
+        {
+          "id": "forclaz-foam-pad"
+        },
+        {
+          "id": "forclaz-trek-pillow"
+        },
+        {
+          "id": "hengduan-usb-pump"
+        }
+      ]
     },
     {
       "id": "c7aa2daf-f5aa-46ae-a8c7-d540e5c07fbd",
       "name": "Vivac Encamp",
       "backpackId": "3f-ul-qidian-40-16",
-      "itemIds": [
-        "et-goretex-tarp",
-        "ul-alu-pegs-8",
-        "quechua-bivy-old"
-      ],
       "groupIds": [
         "1f0c16f9-6d52-416a-b5f4-dcafc70a1d21",
         "569dd8a8-293d-490c-bfa4-0585a57ed10a",
         "aa8047e7-b21e-442c-a88b-ce79aacb46dc"
+      ],
+      "members": [
+        {
+          "id": "et-goretex-tarp"
+        },
+        {
+          "id": "ul-alu-pegs-8"
+        },
+        {
+          "id": "quechua-bivy-old"
+        }
       ]
     },
     {
       "id": "569dd8a8-293d-490c-bfa4-0585a57ed10a",
       "name": "Cocina clásico",
       "backpackId": null,
-      "itemIds": [
-        "toaks-500-pot",
-        "efrevo-mini",
-        "diy-short-windscreen",
-        "cut-sponge",
-        "bic-mini",
-        "diy-bipod-old",
-        "microfiber-cloth"
-      ],
-      "groupIds": []
+      "groupIds": [],
+      "members": [
+        {
+          "id": "toaks-500-pot"
+        },
+        {
+          "id": "efrevo-mini"
+        },
+        {
+          "id": "diy-short-windscreen"
+        },
+        {
+          "id": "cut-sponge"
+        },
+        {
+          "id": "bic-mini"
+        },
+        {
+          "id": "diy-bipod-old"
+        },
+        {
+          "id": "microfiber-cloth"
+        }
+      ]
     },
     {
       "id": "aa8047e7-b21e-442c-a88b-ce79aacb46dc",
       "name": "Electrónica básica",
       "backpackId": null,
-      "itemIds": [
-        "powerbank-10000",
-        "56537b16-2e28-4023-93f4-382940686f9f",
-        "d8a5868e-8817-46c8-bbfc-342d217bc4b2",
-        "ss-di-flashlight"
-      ],
-      "groupIds": []
+      "groupIds": [],
+      "members": [
+        {
+          "id": "powerbank-10000"
+        },
+        {
+          "id": "56537b16-2e28-4023-93f4-382940686f9f"
+        },
+        {
+          "id": "d8a5868e-8817-46c8-bbfc-342d217bc4b2"
+        },
+        {
+          "id": "ss-di-flashlight"
+        }
+      ]
     }
   ]
 }

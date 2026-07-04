@@ -5,9 +5,9 @@ import { useI18n } from '../i18n'
 import {
   BACKPACK_CATEGORY,
   categoryOf,
-  collectGroupItemIds,
   formatWeight,
   groupLoadPercent,
+  groupUnitCount,
   groupWeight,
   groupWeightByCategory,
   itemOf,
@@ -31,7 +31,7 @@ export default function Packs() {
     const trimmed = name.trim()
     const chosen = backpackId || backpacks[0]?.id
     if (!trimmed || !chosen) return
-    const pack = { id: newId(), name: trimmed, backpackId: chosen, itemIds: [], groupIds: [] }
+    const pack = { id: newId(), name: trimmed, backpackId: chosen, members: [], groupIds: [] }
     dispatch({ type: 'group/add', group: pack })
     navigate(`/motxilles/${pack.id}`)
   }
@@ -106,7 +106,7 @@ export default function Packs() {
         {packs.map((pack) => {
           const backpack = pack.backpackId ? itemOf(data, pack.backpackId) : undefined
           const pct = groupLoadPercent(data, pack)
-          const count = collectGroupItemIds(data, pack).size
+          const count = groupUnitCount(data, pack)
           return (
             <li key={pack.id}>
               <Link to={`/motxilles/${pack.id}`} className="card card-link">

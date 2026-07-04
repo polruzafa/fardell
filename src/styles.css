@@ -789,17 +789,62 @@ h2 {
   resize: vertical;
 }
 
-.form .check-row {
-  flex-direction: row;
-  align-items: center;
-  gap: 10px;
+/* ── Controls de pertinença (quantitat i «a sobre») ── */
+
+.row-side {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 5px;
+  flex-shrink: 0;
 }
 
-.form .check-row input[type='checkbox'] {
-  width: 19px;
-  height: 19px;
-  margin: 0;
-  accent-color: var(--accent);
+.row-ctrls {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.ctrl-btn {
+  width: 26px;
+  height: 26px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 1.5px solid var(--line);
+  border-radius: 50%;
+  background: none;
+  color: var(--ink);
+  font-size: 1rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.ctrl-btn svg {
+  width: 14px;
+  height: 14px;
+}
+
+.ctrl-btn-plus {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+.ctrl-worn {
+  color: var(--ink-soft);
+}
+
+.ctrl-worn-on {
+  color: var(--warn);
+  border-color: var(--warn);
+  background: var(--warn-bg);
+}
+
+.row-qty {
+  min-width: 14px;
+  text-align: center;
+  font-size: 0.9rem;
 }
 
 .specs-editor {

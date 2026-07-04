@@ -12,6 +12,7 @@ import {
   groupLoadPercent,
   groupOf,
   groupPath,
+  groupUnitCount,
   groupUnmetNeeds,
   groupWeight,
   groupWeightByCategory,
@@ -20,6 +21,7 @@ import {
   useStore,
   type GearItem,
   type Group,
+  type GroupMember,
 } from '../store'
 
 export default function GroupDetail() {
@@ -77,15 +79,15 @@ export default function GroupDetail() {
     .map((childId) => groupOf(data, childId))
     .filter((g): g is Group => Boolean(g))
     .sort((a, b) => a.name.localeCompare(b.name, 'ca'))
-  const directItems = group.itemIds
-    .map((itemId) => itemOf(data, itemId))
-    .filter((it): it is GearItem => Boolean(it))
+  const directMembers = group.members
+    .map((member) => ({ member, item: itemOf(data, member.id) }))
+    .filter((e): e is { member: GroupMember; item: GearItem } => Boolean(e.item))
 
-  const grouped = new Map<string, GearItem[]>()
-  for (const item of directItems) {
-    const list = grouped.get(item.categoryId) ?? []
-    list.push(item)
-    grouped.set(item.categoryId, list)
+  const grouped = new Map<string, { member: GroupMember; item: GearItem }[]>()
+  for (const entry of directMembers) {
+    const list = grouped.get(entry.item.categoryId) ?? []
+    list.push(entry)
+    grouped.set(entry.item.categoryId, list)
   }
   const itemSections = [...grouped.entries()].sort((a, b) =>
     categoryOf(data, a[0]).name.localeCompare(categoryOf(data, b[0]).name, 'ca'),
@@ -93,7 +95,7 @@ export default function GroupDetail() {
 
   const pct = groupLoadPercent(data, group)
   const unmetNeeds = groupUnmetNeeds(data, group)
-  const isEmpty = group.itemIds.length === 0 && group.groupIds.length === 0
+  const isEmpty = group.members.length === 0 && group.groupIds.length === 0
 
   function acceptRename() {
     if (!group) return
@@ -289,7 +291,7 @@ export default function GroupDetail() {
                       <button
                         className="row row-button"
                         onClick={() =>
-                          dispatch({ type: 'group/toggleItem', groupId: group.id, itemId: item.id })
+                          dispatch({ type: 'group/addItem', groupId: group.id, itemId: item.id })
                         }
                       >
                         <span
@@ -329,8 +331,8 @@ export default function GroupDetail() {
                 <Link to={groupPath(child)} className="row-main inline-link">
                   <span className="row-name">{child.name}</span>
                   <span className="row-tags">
-                    {collectGroupItemIds(data, child).size}{' '}
-                    {collectGroupItemIds(data, child).size === 1 ? t('common.item') : t('common.items')}
+                    {groupUnitCount(data, child)}{' '}
+                    {groupUnitCount(data, child) === 1 ? t('common.item') : t('common.items')}
                   </span>
                 </Link>
                 <span className="mono row-weight">{formatWeight(groupWeight(data, child))}</span>
@@ -349,7 +351,7 @@ export default function GroupDetail() {
         </section>
       )}
 
-      {itemSections.map(([categoryId, items]) => {
+      {itemSections.map(([categoryId, entries]) => {
         const category = categoryOf(data, categoryId)
         return (
           <section key={categoryId} className="group">
@@ -358,33 +360,72 @@ export default function GroupDetail() {
               {category.name}
             </h3>
             <ul className="rows">
-              {items.map((item) => (
-                <li key={item.id} className="row">
-                  <span className="row-bar" style={{ background: category.color }} />
-                  <Link to={`/element/${item.id}`} className="row-main inline-link">
-                    <span className="row-name">{item.name}</span>
-                    {(item.placement || item.worn) && (
-                      <span className="row-tags">
-                        {[item.worn ? t('item.worn').toLowerCase() : null, item.placement]
-                          .filter(Boolean)
-                          .join(' · ')}
+              {entries.map(({ member, item }) => {
+                const qty = member.qty ?? 1
+                const worn = member.worn === true
+                return (
+                  <li key={item.id} className="row">
+                    <span className="row-bar" style={{ background: category.color }} />
+                    <Link to={`/element/${item.id}`} className="row-main inline-link">
+                      <span className="row-name">{item.name}</span>
+                      {(item.placement || worn) && (
+                        <span className="row-tags">
+                          {[worn ? t('item.worn').toLowerCase() : null, item.placement]
+                            .filter(Boolean)
+                            .join(' · ')}
+                        </span>
+                      )}
+                    </Link>
+                    <span className="row-side">
+                      <span className={`mono row-weight${worn ? ' row-weight-worn' : ''}`}>
+                        {qty > 1 && `${qty} × `}
+                        {formatWeight(item.weightGrams === null ? null : qty * item.weightGrams)}
                       </span>
-                    )}
-                  </Link>
-                  <span className={`mono row-weight${item.worn ? ' row-weight-worn' : ''}`}>
-                    {formatWeight(item.weightGrams)}
-                  </span>
-                  <button
-                    className="row-remove"
-                    aria-label={t('pack.removeItem', { name: item.name })}
-                    onClick={() =>
-                      dispatch({ type: 'group/toggleItem', groupId: group.id, itemId: item.id })
-                    }
-                  >
-                    −
-                  </button>
-                </li>
-              ))}
+                      <span className="row-ctrls">
+                        <button
+                          className={`ctrl-btn ctrl-worn${worn ? ' ctrl-worn-on' : ''}`}
+                          aria-label={t('item.worn')}
+                          aria-pressed={worn}
+                          onClick={() =>
+                            dispatch({ type: 'group/toggleWorn', groupId: group.id, itemId: item.id })
+                          }
+                        >
+                          <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <path
+                              d="M8.5 3 4 5.5 5.8 9l1.7-.7V20h9V8.3l1.7.7L20 5.5 15.5 3a3.5 3.5 0 0 1-7 0Z"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="1.7"
+                              strokeLinejoin="round"
+                            />
+                          </svg>
+                        </button>
+                        <button
+                          className="ctrl-btn"
+                          aria-label={t('group.decQty', { name: item.name })}
+                          onClick={() =>
+                            qty <= 1
+                              ? dispatch({ type: 'group/removeItem', groupId: group.id, itemId: item.id })
+                              : dispatch({ type: 'group/setItemQty', groupId: group.id, itemId: item.id, qty: qty - 1 })
+                          }
+                        >
+                          −
+                        </button>
+                        <span className="mono row-qty">{qty}</span>
+                        <button
+                          className="ctrl-btn ctrl-btn-plus"
+                          aria-label={t('group.incQty', { name: item.name })}
+                          onClick={() =>
+                            dispatch({ type: 'group/setItemQty', groupId: group.id, itemId: item.id, qty: qty + 1 })
+                          }
+                        >
+                          +
+                        </button>
+                      </span>
+                    </span>
+                  </li>
+                )
+              })}
             </ul>
           </section>
         )

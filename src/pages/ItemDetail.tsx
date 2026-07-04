@@ -28,7 +28,7 @@ export default function ItemDetail() {
 
   const category = categoryOf(data, item.categoryId)
   const inGroups = data.groups.filter(
-    (g) => g.backpackId === item.id || g.itemIds.includes(item.id),
+    (g) => g.backpackId === item.id || g.members.some((m) => m.id === item.id),
   )
 
   function remove() {
@@ -147,12 +147,6 @@ export default function ItemDetail() {
                 </span>
               ))}
             </dd>
-          </div>
-        )}
-        {item.worn && (
-          <div>
-            <dt>{t('item.worn')}</dt>
-            <dd>{t('form.wornHint')}</dd>
           </div>
         )}
         {item.needs && item.needs.length > 0 && (

@@ -4,8 +4,8 @@ import { useNavigate } from 'react-router-dom'
 import WeightBar from '../components/WeightBar'
 import { useI18n } from '../i18n'
 import {
-  collectGroupItemIds,
   formatWeight,
+  groupUnitCount,
   groupWeight,
   groupWeightByCategory,
   newId,
@@ -25,7 +25,7 @@ export default function KitsPage() {
     e.preventDefault()
     const trimmed = name.trim()
     if (!trimmed) return
-    const kit = { id: newId(), name: trimmed, backpackId: null, itemIds: [], groupIds: [] }
+    const kit = { id: newId(), name: trimmed, backpackId: null, members: [], groupIds: [] }
     dispatch({ type: 'group/add', group: kit })
     navigate(`/kits/${kit.id}`)
   }
@@ -72,7 +72,7 @@ export default function KitsPage() {
 
       <ul className="cards">
         {kits.map((kit) => {
-          const count = collectGroupItemIds(data, kit).size
+          const count = groupUnitCount(data, kit)
           return (
             <li key={kit.id}>
               <Link to={`/kits/${kit.id}`} className="card card-link">

@@ -68,7 +68,7 @@ export function mergeSeedData(base: GearData, user: GearData, seed: GearData): G
   merged.groups = merged.groups.map((g) => ({
     ...g,
     backpackId: g.backpackId !== null && itemIds.has(g.backpackId) ? g.backpackId : null,
-    itemIds: g.itemIds.filter((id) => itemIds.has(id)),
+    members: g.members.filter((m) => itemIds.has(m.id)),
     groupIds: g.groupIds.filter((id) => groupIds.has(id) && id !== g.id),
   }))
   return merged

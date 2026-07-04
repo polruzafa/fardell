@@ -75,8 +75,8 @@ const ca = {
   'form.tagsPlaceholder': 'ultralight, hivern',
   'form.needsHint': '(etiquetes d’altres elements que ho cobreixen, separades per comes)',
   'form.needsPlaceholder': 'fuel, mechero',
-  'form.worn': 'Es porta a sobre',
-  'form.wornHint': '(no compta en el pes de la motxilla)',
+  'group.incQty': 'Afegeix una unitat de «{name}»',
+  'group.decQty': 'Treu una unitat de «{name}»',
 
   'kits.new': 'Crea un kit',
   'kits.name': 'Nom del kit',
@@ -220,8 +220,8 @@ const es: Record<TKey, string> = {
   'form.tagsPlaceholder': 'ultralight, invierno',
   'form.needsHint': '(etiquetas de otros elementos que lo cubren, separadas por comas)',
   'form.needsPlaceholder': 'fuel, mechero',
-  'form.worn': 'Se lleva puesto',
-  'form.wornHint': '(no cuenta en el peso de la mochila)',
+  'group.incQty': 'Añadir una unidad de «{name}»',
+  'group.decQty': 'Quitar una unidad de «{name}»',
 
   'kits.new': 'Crear un kit',
   'kits.name': 'Nombre del kit',
@@ -362,8 +362,8 @@ const en: Record<TKey, string> = {
   'form.tagsPlaceholder': 'ultralight, winter',
   'form.needsHint': '(tags of other items that cover it, comma-separated)',
   'form.needsPlaceholder': 'fuel, lighter',
-  'form.worn': 'Worn, not packed',
-  'form.wornHint': '(does not count toward pack weight)',
+  'group.incQty': 'Add one unit of “{name}”',
+  'group.decQty': 'Remove one unit of “{name}”',
 
   'kits.new': 'Create a kit',
   'kits.name': 'Kit name',

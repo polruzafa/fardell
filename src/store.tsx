@@ -38,9 +38,16 @@ export type GearItem = {
    * motxilla o el kit mostren un avís — mai no bloquegen res.
    */
   needs?: string[]
+}
+
+/** Un element dins d'un grup: la quantitat i el «a sobre» són del grup, no de l'element. */
+export type GroupMember = {
+  id: string
+  /** Unitats que van al grup (per defecte, 1). */
+  qty?: number
   /**
-   * Es porta a sobre (roba posada, bastons a la mà, gorra…): surt a la llista
-   * del grup però no compta en el pes transportat ni en el % de càrrega.
+   * En aquest grup es porta a sobre (roba posada, bastons a la mà…): surt a
+   * la llista però no compta en el pes transportat ni en el % de càrrega.
    */
   worn?: boolean
 }
@@ -55,7 +62,7 @@ export type Group = {
   id: string
   name: string
   backpackId: string | null
-  itemIds: string[]
+  members: GroupMember[]
   groupIds: string[]
 }
 
@@ -82,7 +89,10 @@ export type Action =
   | { type: 'group/add'; group: Group }
   | { type: 'group/rename'; id: string; name: string }
   | { type: 'group/delete'; id: string }
-  | { type: 'group/toggleItem'; groupId: string; itemId: string }
+  | { type: 'group/addItem'; groupId: string; itemId: string }
+  | { type: 'group/removeItem'; groupId: string; itemId: string }
+  | { type: 'group/setItemQty'; groupId: string; itemId: string; qty: number }
+  | { type: 'group/toggleWorn'; groupId: string; itemId: string }
   | { type: 'group/toggleGroup'; groupId: string; childId: string }
   | { type: 'data/import'; data: GearData }
   | { type: 'data/reset' }
@@ -110,7 +120,7 @@ function reducer(data: GearData, action: Action): GearData {
           ...g,
           // Si era la motxilla d'un grup, el grup passa a ser un kit: no es perd res.
           backpackId: g.backpackId === action.id ? null : g.backpackId,
-          itemIds: g.itemIds.filter((id) => id !== action.id),
+          members: g.members.filter((m) => m.id !== action.id),
         })),
       }
     case 'group/add':
@@ -127,20 +137,33 @@ function reducer(data: GearData, action: Action): GearData {
           .filter((g) => g.id !== action.id)
           .map((g) => ({ ...g, groupIds: g.groupIds.filter((id) => id !== action.id) })),
       }
-    case 'group/toggleItem':
-      return {
-        ...data,
-        groups: data.groups.map((g) => {
-          if (g.id !== action.groupId) return g
-          const has = g.itemIds.includes(action.itemId)
-          return {
-            ...g,
-            itemIds: has
-              ? g.itemIds.filter((id) => id !== action.itemId)
-              : [...g.itemIds, action.itemId],
-          }
-        }),
-      }
+    case 'group/addItem':
+      return updateGroup(data, action.groupId, (g) =>
+        g.members.some((m) => m.id === action.itemId)
+          ? g
+          : { ...g, members: [...g.members, { id: action.itemId }] },
+      )
+    case 'group/removeItem':
+      return updateGroup(data, action.groupId, (g) => ({
+        ...g,
+        members: g.members.filter((m) => m.id !== action.itemId),
+      }))
+    case 'group/setItemQty': {
+      const qty = Math.max(1, Math.round(action.qty))
+      return updateGroup(data, action.groupId, (g) => ({
+        ...g,
+        members: g.members.map((m) =>
+          m.id === action.itemId ? { ...m, qty: qty === 1 ? undefined : qty } : m,
+        ),
+      }))
+    }
+    case 'group/toggleWorn':
+      return updateGroup(data, action.groupId, (g) => ({
+        ...g,
+        members: g.members.map((m) =>
+          m.id === action.itemId ? { ...m, worn: m.worn ? undefined : true } : m,
+        ),
+      }))
     case 'group/toggleGroup':
       return {
         ...data,
@@ -160,6 +183,10 @@ function reducer(data: GearData, action: Action): GearData {
     case 'data/reset':
       return seedData
   }
+}
+
+function updateGroup(data: GearData, groupId: string, fn: (g: Group) => Group): GearData {
+  return { ...data, groups: data.groups.map((g) => (g.id === groupId ? fn(g) : g)) }
 }
 
 // ── Política de migracions ──────────────────────────────────────────────────
@@ -193,7 +220,8 @@ function migrate(raw: Record<string, unknown>): GearData {
   if (data.schemaVersion === 3) {
     const items = data.items as (GearItem & { kit?: number })[]
     const kitNumbers = [...new Set(items.map((it) => it.kit).filter((k): k is number => k != null))]
-    const kitGroups: Group[] = kitNumbers.map((n) => ({
+    // Forma intermèdia v4 (amb itemIds); el pas v4 → v5 de sota la converteix.
+    const kitGroups = kitNumbers.map((n) => ({
       id: `kit-${n}`,
       name: `Kit ${n}`,
       backpackId: null,
@@ -213,6 +241,28 @@ function migrate(raw: Record<string, unknown>): GearData {
         })),
         ...kitGroups,
       ],
+    }
+  }
+  // v4 → v5: `itemIds` passa a `members` (amb qty i worn per grup) i el camp
+  // `worn` dels elements es converteix en worn de cadascuna de les seves
+  // pertinences a grups.
+  if (data.schemaVersion === 4) {
+    const wornIds = new Set(
+      (data.items as any[]).filter((it) => it.worn === true).map((it) => it.id as string),
+    )
+    data = {
+      ...data,
+      schemaVersion: 5,
+      items: (data.items as any[]).map(({ worn, ...it }) => it),
+      groups: (data.groups as any[]).map((g) => {
+        const { itemIds, ...rest } = g
+        return {
+          ...rest,
+          members: ((itemIds ?? []) as string[]).map((id) =>
+            wornIds.has(id) ? { id, worn: true } : { id },
+          ),
+        }
+      }),
     }
   }
   return data as GearData
@@ -307,49 +357,67 @@ export function groupPath(group: Group): string {
   return `${group.backpackId ? '/motxilles' : '/kits'}/${group.id}`
 }
 
+export type EffectiveMember = { qty: number; worn: boolean }
+
 /**
- * Ids ÚNICS de tots els elements continguts, grups imbricats inclosos (una
- * motxilla imbricada hi aporta també la seva pròpia motxilla, perquè es
- * carrega). No inclou la motxilla pròpia del grup arrel. Un element present
- * per dos camins compta un sol cop, i el recorregut és a prova de cicles.
+ * Pertinences efectives del grup, grups imbricats inclosos (una motxilla
+ * imbricada hi aporta la seva pròpia motxilla, perquè es carrega). No inclou
+ * la motxilla pròpia del grup arrel. Si una mateixa peça arriba per dos
+ * camins, val la quantitat MÉS GRAN (no la suma: és la mateixa peça física) i
+ * es porta a sobre si ho és per qualsevol camí. A prova de cicles.
  */
-export function collectGroupItemIds(data: GearData, group: Group): Set<string> {
-  const itemIds = new Set<string>()
+export function collectGroupMembers(data: GearData, group: Group): Map<string, EffectiveMember> {
+  const acc = new Map<string, EffectiveMember>()
   const visited = new Set<string>()
+  const add = (id: string, qty: number, worn: boolean) => {
+    const prev = acc.get(id)
+    acc.set(id, prev ? { qty: Math.max(prev.qty, qty), worn: prev.worn || worn } : { qty, worn })
+  }
   const walk = (g: Group) => {
     if (visited.has(g.id)) return
     visited.add(g.id)
-    for (const id of g.itemIds) itemIds.add(id)
+    for (const m of g.members) add(m.id, m.qty ?? 1, m.worn ?? false)
     for (const childId of g.groupIds) {
       const child = groupOf(data, childId)
       if (!child) continue
-      if (child.backpackId) itemIds.add(child.backpackId)
+      if (child.backpackId) add(child.backpackId, 1, false)
       walk(child)
     }
   }
   walk(group)
-  return itemIds
+  return acc
+}
+
+/** Ids únics de tots els elements continguts (comoditat sobre collectGroupMembers). */
+export function collectGroupItemIds(data: GearData, group: Group): Set<string> {
+  return new Set(collectGroupMembers(data, group).keys())
+}
+
+/** Unitats totals del grup (les quantitats compten; el que es porta a sobre, també). */
+export function groupUnitCount(data: GearData, group: Group): number {
+  let units = 0
+  for (const m of collectGroupMembers(data, group).values()) units += m.qty
+  return units
 }
 
 /**
- * Pes del contingut transportat (sense la motxilla pròpia ni els elements
- * portats a sobre): es compara amb la càrrega màxima.
+ * Pes del contingut transportat (sense la motxilla pròpia ni el que es porta
+ * a sobre): es compara amb la càrrega màxima.
  */
 export function groupContentsWeight(data: GearData, group: Group): number {
   let sum = 0
-  for (const id of collectGroupItemIds(data, group)) {
-    const item = itemOf(data, id)
-    if (item && !item.worn) sum += item.weightGrams ?? 0
+  for (const [id, m] of collectGroupMembers(data, group)) {
+    if (m.worn) continue
+    sum += m.qty * (itemOf(data, id)?.weightGrams ?? 0)
   }
   return sum
 }
 
-/** Pes dels elements del grup que es porten a sobre (no van dins la motxilla). */
+/** Pes del que es porta a sobre en aquest grup (no va dins la motxilla). */
 export function groupWornWeight(data: GearData, group: Group): number {
   let sum = 0
-  for (const id of collectGroupItemIds(data, group)) {
-    const item = itemOf(data, id)
-    if (item?.worn) sum += item.weightGrams ?? 0
+  for (const [id, m] of collectGroupMembers(data, group)) {
+    if (m.worn) sum += m.qty * (itemOf(data, id)?.weightGrams ?? 0)
   }
   return sum
 }
@@ -362,13 +430,19 @@ export function groupWeight(data: GearData, group: Group): number {
 
 /** Pes transportat per categoria (motxilla pròpia inclosa; sense el que es porta a sobre). */
 export function groupWeightByCategory(data: GearData, group: Group): Map<string, number> {
-  const ids = collectGroupItemIds(data, group)
-  if (group.backpackId) ids.add(group.backpackId)
+  const members = collectGroupMembers(data, group)
+  if (group.backpackId && !members.has(group.backpackId)) {
+    members.set(group.backpackId, { qty: 1, worn: false })
+  }
   const byCategory = new Map<string, number>()
-  for (const id of ids) {
+  for (const [id, m] of members) {
+    if (m.worn) continue
     const item = itemOf(data, id)
-    if (!item || item.worn) continue
-    byCategory.set(item.categoryId, (byCategory.get(item.categoryId) ?? 0) + (item.weightGrams ?? 0))
+    if (!item) continue
+    byCategory.set(
+      item.categoryId,
+      (byCategory.get(item.categoryId) ?? 0) + m.qty * (item.weightGrams ?? 0),
+    )
   }
   return byCategory
 }

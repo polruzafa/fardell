@@ -167,7 +167,6 @@ export function parseItemsJson(text: string, data: GearData): ItemsImportResult 
       caseWeightGrams: asGrams(e.caseWeightGrams ?? e.peso_funda_g),
       maxLoadGrams: asGrams(e.maxLoadGrams),
       needs: needs.length > 0 ? needs : undefined,
-      worn: e.worn === true ? true : undefined,
       specs: specs.length > 0 ? specs : undefined,
     })
   })
