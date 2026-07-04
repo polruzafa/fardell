@@ -37,7 +37,9 @@ pnpm icons      # regenera les icones PNG (scripts/make-icons.mjs)
 
 ## Desplegament
 
-Es publica automàticament a **https://polruzafa.github.io/fornets/for-gear/** amb el workflow `deploy-web.yml`, que construeix `fornets-web` i `for-gear` i les serveix com un únic site de Pages. `base: './'` i el `HashRouter` fan que funcioni des de qualsevol subcarpeta.
+Es publica automàticament a **https://polruzafa.github.io/for.gear/** amb el workflow `deploy.yml` a cada push a `main`. `base: './'` i el `HashRouter` fan que funcioni des de qualsevol subcarpeta.
+
+Fins al juliol del 2026 l'app vivia dins del repositori `fornets` i es servia a `/fornets/for-gear/`; la història d'aquells commits es va conservar amb `git subtree split`.
 
 ## Instal·lació al mòbil
 
