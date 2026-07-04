@@ -440,6 +440,35 @@
       "weightGrams": 115,
       "notes": "Muy útil para bushcraft y trabajos de campamento.",
       "photo": null
+    },
+    {
+      "id": "titanium-pot-handle",
+      "name": "asa de titanio para ollas",
+      "categoryId": "cocina",
+      "tags": ["asa", "titanio"],
+      "weightGrams": 46,
+      "notes": "",
+      "photo": null
+    },
+    {
+      "id": "3f-ul-qidian-40-16",
+      "name": "mochila 3F UL Qidian 40+16",
+      "categoryId": "mochilas",
+      "tags": ["mochila", "ultralight"],
+      "weightGrams": 850,
+      "notes": "",
+      "photo": null,
+      "maxLoadGrams": 12000,
+      "specs": [{ "label": "Volumen", "value": "40L+16L" }]
+    },
+    {
+      "id": "decathlon-steel-pegs-5",
+      "name": "5 piquetas acero DECATHLON",
+      "categoryId": "refugio",
+      "tags": ["piquetas", "acero"],
+      "weightGrams": 156,
+      "notes": "5 unidades.",
+      "photo": null
     }
   ],
   "packs": []
