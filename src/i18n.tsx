@@ -37,7 +37,11 @@ const ca = {
   'item.missing': 'Aquest element ja no existeix.',
   'item.backToGear': 'Torna al material',
   'item.photo': 'Fotografia',
-  'item.noPhoto': 'Encara no hi ha cap fotografia',
+  'item.addPhoto': 'Afegeix una fotografia',
+  'item.changePhoto': 'Canvia la fotografia',
+  'item.deletePhoto': 'Suprimeix la fotografia',
+  'item.photoError': 'No s’ha pogut desar la fotografia.',
+  'item.photoLocalHint': 'La fotografia es desa només en aquest dispositiu.',
   'item.category': 'Categoria',
   'item.weight': 'Pes',
   'item.caseWeight': 'Pes de la funda',
@@ -98,7 +102,10 @@ const ca = {
 
   'weightbar.total': 'Pes total: {weight}',
 
-  'data.language': 'Llengua',
+  'settings.title': 'Ajustos',
+  'settings.language': 'Llengua',
+  'settings.version': 'Versió',
+
   'data.items': 'Elements',
   'data.packs': 'Motxilles preparades',
   'data.totalWeight': 'Pes de tot el material',
@@ -142,7 +149,11 @@ const es: Record<TKey, string> = {
   'item.missing': 'Este elemento ya no existe.',
   'item.backToGear': 'Volver al material',
   'item.photo': 'Fotografía',
-  'item.noPhoto': 'Todavía no hay ninguna fotografía',
+  'item.addPhoto': 'Añadir una fotografía',
+  'item.changePhoto': 'Cambiar la fotografía',
+  'item.deletePhoto': 'Eliminar la fotografía',
+  'item.photoError': 'No se ha podido guardar la fotografía.',
+  'item.photoLocalHint': 'La fotografía se guarda solo en este dispositivo.',
   'item.category': 'Categoría',
   'item.weight': 'Peso',
   'item.caseWeight': 'Peso de la funda',
@@ -203,7 +214,10 @@ const es: Record<TKey, string> = {
 
   'weightbar.total': 'Peso total: {weight}',
 
-  'data.language': 'Idioma',
+  'settings.title': 'Ajustes',
+  'settings.language': 'Idioma',
+  'settings.version': 'Versión',
+
   'data.items': 'Elementos',
   'data.packs': 'Mochilas preparadas',
   'data.totalWeight': 'Peso de todo el material',
@@ -246,7 +260,11 @@ const en: Record<TKey, string> = {
   'item.missing': 'This item no longer exists.',
   'item.backToGear': 'Back to gear',
   'item.photo': 'Photo',
-  'item.noPhoto': 'No photo yet',
+  'item.addPhoto': 'Add a photo',
+  'item.changePhoto': 'Change photo',
+  'item.deletePhoto': 'Delete photo',
+  'item.photoError': 'Could not save the photo.',
+  'item.photoLocalHint': 'The photo is stored on this device only.',
   'item.category': 'Category',
   'item.weight': 'Weight',
   'item.caseWeight': 'Case weight',
@@ -307,7 +325,10 @@ const en: Record<TKey, string> = {
 
   'weightbar.total': 'Total weight: {weight}',
 
-  'data.language': 'Language',
+  'settings.title': 'Settings',
+  'settings.language': 'Language',
+  'settings.version': 'Version',
+
   'data.items': 'Items',
   'data.packs': 'Prepared packs',
   'data.totalWeight': 'Weight of all gear',

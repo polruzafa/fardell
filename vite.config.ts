@@ -1,10 +1,23 @@
+import { execSync } from 'node:child_process'
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa'
 
+const commit = (() => {
+  try {
+    return execSync('git rev-parse --short HEAD').toString().trim()
+  } catch {
+    return 'dev'
+  }
+})()
+
 // base: './' perquè funcioni servida des de qualsevol subcarpeta (GitHub Pages, etc.)
 export default defineConfig({
   base: './',
+  define: {
+    __BUILD_DATE__: JSON.stringify(new Date().toISOString()),
+    __COMMIT__: JSON.stringify(commit),
+  },
   plugins: [
     react(),
     VitePWA({

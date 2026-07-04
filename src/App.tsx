@@ -1,4 +1,4 @@
-import { HashRouter, Navigate, NavLink, Outlet, Route, Routes } from 'react-router-dom'
+import { HashRouter, Link, Navigate, NavLink, Outlet, Route, Routes } from 'react-router-dom'
 import { I18nProvider, useI18n } from './i18n'
 import { StoreProvider } from './store'
 import GearList from './pages/GearList'
@@ -7,6 +7,7 @@ import ItemForm from './pages/ItemForm'
 import Packs from './pages/Packs'
 import PackDetail from './pages/PackDetail'
 import DataPage from './pages/DataPage'
+import SettingsPage from './pages/SettingsPage'
 
 function Layout() {
   const { t } = useI18n()
@@ -16,6 +17,17 @@ function Layout() {
         <span className="wordmark">
           For<span className="wordmark-dot">·</span>Gear
         </span>
+        <Link to="/ajustos" className="settings-link" aria-label={t('settings.title')}>
+          <svg viewBox="0 0 24 24" aria-hidden="true" className="settings-icon">
+            <path
+              d="M4 6h9m4 0h3M13 3.8v4.4M4 12h3m4 0h9M7 9.8v4.4M4 18h11m4 0h1M15 15.8v4.4"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.8"
+              strokeLinecap="round"
+            />
+          </svg>
+        </Link>
       </header>
       <main className="content">
         <Outlet />
@@ -65,6 +77,7 @@ export default function App() {
               <Route path="motxilles" element={<Packs />} />
               <Route path="motxilles/:id" element={<PackDetail />} />
               <Route path="dades" element={<DataPage />} />
+              <Route path="ajustos" element={<SettingsPage />} />
               <Route path="*" element={<Navigate to="/" replace />} />
             </Route>
           </Routes>

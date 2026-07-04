@@ -14,6 +14,14 @@ PWA per portar l'inventari de material de muntanya i preparar motxilles. Sense s
 - El primer cop, l'app copia la llavor a `localStorage`; a partir d'aleshores totes les edicions es desen al dispositiu.
 - Per actualitzar la llavor del repositori: *Dades → Exporta el JSON* i substituïu `src/data/gear.json` pel fitxer exportat.
 
+### Migracions
+
+Les dades de l'usuari viuen a `localStorage` i no s'han de perdre mai en una actualització:
+
+1. **Camps opcionals nous**: no cal apujar `schemaVersion`; les dades velles són vàlides tal qual.
+2. **Canvis incompatibles** (renoms, canvis d'unitats o de forma): apugeu `schemaVersion` a la llavor **i** afegiu un pas a `migrate()` de `src/store.tsx` que transformi les dades antigues sense descartar-les.
+3. El reset a la llavor és només l'últim recurs, per a dades corruptes o de versions desconegudes.
+
 ## Desenvolupament
 
 ```sh

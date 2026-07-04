@@ -107,13 +107,32 @@ function reducer(data: GearData, action: Action): GearData {
   }
 }
 
+// ── Política de migracions ──────────────────────────────────────────────────
+// Les dades de l'usuari viuen al dispositiu i NO es poden descartar a la
+// lleugera. Regles:
+//  1. Afegir un camp OPCIONAL no requereix apujar schemaVersion: les dades
+//     desades segueixen sent vàlides tal qual.
+//  2. Si un canvi és incompatible (camp que canvia de forma, renom, unitats),
+//     apugeu schemaVersion a la llavor i afegiu un pas a migrate() que
+//     TRANSFORMI les dades de la versió anterior sense perdre res.
+//  3. Tornar a la llavor és només l'últim recurs per a dades corruptes o de
+//     versions desconegudes (més noves que l'app, per exemple).
+function migrate(data: GearData): GearData {
+  // v2 → v3: només es van afegir camps opcionals (maxLoadGrams, specs) i
+  // característiques a la llavor; les dades de l'usuari són vàlides tal qual.
+  if (data.schemaVersion === 2) data = { ...data, schemaVersion: 3 }
+  return data
+}
+
 function load(): GearData {
   try {
     const raw = localStorage.getItem(STORAGE_KEY)
     if (raw) {
       const parsed = JSON.parse(raw) as unknown
-      // Si l'esquema desat és d'una versió anterior, es torna a la llavor.
-      if (isGearData(parsed) && parsed.schemaVersion === seedData.schemaVersion) return parsed
+      if (isGearData(parsed)) {
+        const migrated = migrate(parsed)
+        if (migrated.schemaVersion === seedData.schemaVersion) return migrated
+      }
     }
   } catch {
     // dades corruptes: es torna a les dades d'exemple

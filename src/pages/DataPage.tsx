@@ -1,10 +1,11 @@
 import { useRef } from 'react'
-import { LANGS, useI18n } from '../i18n'
-import { formatWeight, isGearData, useStore, type GearData } from '../store'
+import { useI18n } from '../i18n'
+import { prunePhotos } from '../photos'
+import { formatWeight, isGearData, seedData, useStore, type GearData } from '../store'
 
 export default function DataPage() {
   const { data, dispatch } = useStore()
-  const { lang, setLang, t } = useI18n()
+  const { t } = useI18n()
   const fileInput = useRef<HTMLInputElement>(null)
 
   const totalWeight = data.items.reduce((sum, it) => sum + (it.weightGrams ?? 0), 0)
@@ -31,33 +32,24 @@ export default function DataPage() {
       const ok = window.confirm(
         t('data.importConfirm', { items: incoming.items.length, packs: incoming.packs.length }),
       )
-      if (ok) dispatch({ type: 'data/import', data: incoming })
+      if (ok) {
+        dispatch({ type: 'data/import', data: incoming })
+        void prunePhotos(new Set(incoming.items.map((it) => it.id)))
+      }
     } catch {
       window.alert(t('data.importError'))
     }
   }
 
   function reset() {
-    if (window.confirm(t('data.resetConfirm'))) dispatch({ type: 'data/reset' })
+    if (!window.confirm(t('data.resetConfirm'))) return
+    dispatch({ type: 'data/reset' })
+    void prunePhotos(new Set(seedData.items.map((it) => it.id)))
   }
 
   return (
     <>
       <h1>{t('tabs.data')}</h1>
-
-      <h2>{t('data.language')}</h2>
-      <div className="chips" role="group" aria-label={t('data.language')}>
-        {LANGS.map((l) => (
-          <button
-            key={l.code}
-            className={`chip${lang === l.code ? ' chip-on' : ''}`}
-            lang={l.code}
-            onClick={() => setLang(l.code)}
-          >
-            {l.label}
-          </button>
-        ))}
-      </div>
 
       <dl className="facts">
         <div>

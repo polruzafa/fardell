@@ -1,5 +1,7 @@
+import { useRef, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { useI18n } from '../i18n'
+import { deletePhoto, downscale, savePhoto, usePhoto } from '../photos'
 import { categoryOf, formatWeight, itemOf, useStore } from '../store'
 
 export default function ItemDetail() {
@@ -9,6 +11,10 @@ export default function ItemDetail() {
   const navigate = useNavigate()
 
   const item = id ? itemOf(data, id) : undefined
+  const { url: photoUrl, refresh: refreshPhoto } = usePhoto(item?.id)
+  const fileInput = useRef<HTMLInputElement>(null)
+  const [savingPhoto, setSavingPhoto] = useState(false)
+
   if (!item) {
     return (
       <div className="empty">
@@ -30,8 +36,27 @@ export default function ItemDetail() {
   function remove() {
     if (!item) return
     if (!window.confirm(t('item.confirmDelete', { name: item.name }))) return
+    void deletePhoto(item.id)
     dispatch({ type: 'item/delete', id: item.id })
     navigate('/')
+  }
+
+  async function onPhotoPicked(file: File) {
+    if (!item) return
+    setSavingPhoto(true)
+    try {
+      await savePhoto(item.id, await downscale(file))
+      refreshPhoto()
+    } catch {
+      window.alert(t('item.photoError'))
+    } finally {
+      setSavingPhoto(false)
+    }
+  }
+
+  function removePhoto() {
+    if (!item) return
+    void deletePhoto(item.id).then(refreshPhoto)
   }
 
   return (
@@ -41,8 +66,40 @@ export default function ItemDetail() {
       </Link>
 
       <div className="photo-slot" aria-label={t('item.photo')}>
-        {item.photo ? <img src={item.photo} alt={item.name} /> : <span>{t('item.noPhoto')}</span>}
+        {photoUrl ? (
+          <img src={photoUrl} alt={item.name} />
+        ) : (
+          <button
+            className="photo-add"
+            disabled={savingPhoto}
+            onClick={() => fileInput.current?.click()}
+          >
+            {savingPhoto ? '…' : t('item.addPhoto')}
+          </button>
+        )}
       </div>
+      {photoUrl && (
+        <div className="actions photo-actions">
+          <button className="btn btn-small" disabled={savingPhoto} onClick={() => fileInput.current?.click()}>
+            {t('item.changePhoto')}
+          </button>
+          <button className="btn btn-small" onClick={removePhoto}>
+            {t('item.deletePhoto')}
+          </button>
+          <span className="hint">{t('item.photoLocalHint')}</span>
+        </div>
+      )}
+      <input
+        ref={fileInput}
+        type="file"
+        accept="image/*"
+        hidden
+        onChange={(e) => {
+          const file = e.target.files?.[0]
+          if (file) void onPhotoPicked(file)
+          e.target.value = ''
+        }}
+      />
 
       <h1 className="detail-name">{item.name}</h1>
 
