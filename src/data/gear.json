@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 2,
+  "schemaVersion": 3,
   "categories": [
     { "id": "mochilas", "name": "Mochilas", "color": "#8a5a3b" },
     { "id": "marcha", "name": "Marcha", "color": "#5e7d4f" },
@@ -151,7 +151,8 @@
       "tags": ["windshield", "titanio"],
       "weightGrams": 18,
       "notes": "",
-      "photo": null
+      "photo": null,
+      "specs": [{ "label": "Diámetro", "value": "66 mm" }]
     },
     {
       "id": "bic-mini",
@@ -198,7 +199,8 @@
       "weightGrams": 99,
       "notes": "",
       "photo": null,
-      "caseWeightGrams": 13
+      "caseWeightGrams": 13,
+      "specs": [{ "label": "Capacidad", "value": "500 ml" }]
     },
     {
       "id": "optimus-long-spoon",
@@ -261,7 +263,8 @@
       "tags": ["fuel", "alcohol"],
       "weightGrams": 97,
       "notes": "",
-      "photo": null
+      "photo": null,
+      "specs": [{ "label": "Capacidad", "value": "0,5 L" }]
     },
     {
       "id": "mess-tin-kit",
@@ -309,7 +312,8 @@
       "tags": ["taza"],
       "weightGrams": 71,
       "notes": "",
-      "photo": null
+      "photo": null,
+      "specs": [{ "label": "Capacidad", "value": "250 ml" }]
     },
     {
       "id": "folding-titanium-spork",

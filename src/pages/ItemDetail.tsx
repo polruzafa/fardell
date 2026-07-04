@@ -64,6 +64,18 @@ export default function ItemDetail() {
             <dd className="mono">{formatWeight(item.caseWeightGrams)}</dd>
           </div>
         )}
+        {item.maxLoadGrams != null && (
+          <div>
+            <dt>{t('item.maxLoad')}</dt>
+            <dd className="mono">{formatWeight(item.maxLoadGrams)}</dd>
+          </div>
+        )}
+        {item.specs?.map((spec) => (
+          <div key={spec.label}>
+            <dt>{spec.label}</dt>
+            <dd className="mono">{spec.value}</dd>
+          </div>
+        ))}
         {item.placement && (
           <div>
             <dt>{t('item.placement')}</dt>

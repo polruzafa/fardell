@@ -458,6 +458,40 @@ h2 {
   color: var(--ink-soft);
 }
 
+/* ── Indicador de càrrega ── */
+
+.loadgauge {
+  margin-top: 10px;
+}
+
+.loadgauge-bar {
+  height: 8px;
+  border-radius: 4px;
+  background: var(--line);
+  overflow: hidden;
+}
+
+.loadgauge-bar span {
+  display: block;
+  height: 100%;
+  border-radius: 4px;
+  background: var(--accent);
+  transition: width 0.3s ease;
+}
+
+.loadgauge-over .loadgauge-bar span {
+  background: var(--danger);
+}
+
+.loadgauge .hint {
+  margin: 6px 0 0;
+}
+
+.load-over {
+  color: var(--danger);
+  font-weight: 600;
+}
+
 /* ── Detall ── */
 
 .photo-slot {
@@ -574,6 +608,46 @@ h2 {
 
 .form textarea {
   resize: vertical;
+}
+
+.specs-editor {
+  border: 0;
+  padding: 0;
+  margin: 0;
+  min-inline-size: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-family: var(--font-display);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.8rem;
+  color: var(--ink-soft);
+}
+
+.specs-editor legend {
+  padding: 0;
+  margin-bottom: 5px;
+}
+
+.spec-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.spec-row input {
+  flex: 1;
+  min-width: 0;
+}
+
+.btn-small {
+  align-self: flex-start;
+  padding: 5px 12px;
+  font-size: 0.8rem;
+  border-width: 1px;
+  border-color: var(--line);
+  color: var(--ink-soft);
 }
 
 /* ── Diversos ── */

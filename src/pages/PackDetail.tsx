@@ -6,6 +6,8 @@ import {
   categoryOf,
   formatWeight,
   itemOf,
+  packContentsWeight,
+  packLoadPercent,
   packWeight,
   packWeightByCategory,
   useStore,
@@ -83,6 +85,36 @@ export default function PackDetail() {
 
       <p className="total-weight mono">{formatWeight(packWeight(data, pack))}</p>
       <p className="hint">{t('pack.totalHint')}</p>
+
+      {backpack?.maxLoadGrams != null &&
+        (() => {
+          const load = packContentsWeight(data, pack)
+          const pct = packLoadPercent(data, pack)!
+          return (
+            <div className={`loadgauge${pct > 100 ? ' loadgauge-over' : ''}`}>
+              <div className="loadgauge-bar">
+                <span style={{ width: `${Math.min(pct, 100)}%` }} />
+              </div>
+              <p className="hint">
+                <span className="mono">
+                  {t('pack.load', {
+                    load: formatWeight(load),
+                    max: formatWeight(backpack.maxLoadGrams),
+                    pct,
+                  })}
+                </span>
+                {pct > 100 && (
+                  <>
+                    {' · '}
+                    <strong className="load-over">
+                      {t('pack.overBy', { amount: formatWeight(load - backpack.maxLoadGrams) })}
+                    </strong>
+                  </>
+                )}
+              </p>
+            </div>
+          )
+        })()}
 
       <WeightBar data={data} weights={packWeightByCategory(data, pack)} />
 

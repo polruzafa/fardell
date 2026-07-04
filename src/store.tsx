@@ -29,6 +29,10 @@ export type GearItem = {
   kit?: number
   /** Pes de la funda quan es pesa a part, en grams. */
   caseWeightGrams?: number
+  /** Càrrega màxima recomanada (per a motxilles), en grams. */
+  maxLoadGrams?: number
+  /** Característiques lliures, només informatives («Capacidad: 750 ml», «R-value: 4,2»…). */
+  specs?: { label: string; value: string }[]
 }
 
 export type Pack = {
@@ -165,6 +169,18 @@ export function itemOf(data: GearData, id: string): GearItem | undefined {
 export function packWeight(data: GearData, pack: Pack): number {
   const ids = [pack.backpackId, ...pack.itemIds]
   return ids.reduce((sum, id) => sum + (itemOf(data, id)?.weightGrams ?? 0), 0)
+}
+
+/** Pes del contingut (sense la motxilla): és el que es compara amb la càrrega màxima. */
+export function packContentsWeight(data: GearData, pack: Pack): number {
+  return pack.itemIds.reduce((sum, id) => sum + (itemOf(data, id)?.weightGrams ?? 0), 0)
+}
+
+/** Percentatge de càrrega sobre la màxima de la motxilla, o null si no té càrrega màxima. */
+export function packLoadPercent(data: GearData, pack: Pack): number | null {
+  const maxLoad = itemOf(data, pack.backpackId)?.maxLoadGrams
+  if (!maxLoad) return null
+  return Math.round((packContentsWeight(data, pack) / maxLoad) * 100)
 }
 
 /** Pes per categoria d'una motxilla preparada (inclou la motxilla mateixa). */

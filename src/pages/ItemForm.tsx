@@ -1,7 +1,7 @@
 import { useState, type FormEvent } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { useI18n } from '../i18n'
-import { itemOf, newId, useStore } from '../store'
+import { BACKPACK_CATEGORY, itemOf, newId, useStore } from '../store'
 
 export default function ItemForm() {
   const { id } = useParams()
@@ -18,8 +18,18 @@ export default function ItemForm() {
   const [caseWeight, setCaseWeight] = useState(existing?.caseWeightGrams?.toString() ?? '')
   const [placement, setPlacement] = useState(existing?.placement ?? '')
   const [kit, setKit] = useState(existing?.kit?.toString() ?? '')
+  const [maxLoad, setMaxLoad] = useState(
+    existing?.maxLoadGrams != null ? (existing.maxLoadGrams / 1000).toString() : '',
+  )
   const [tags, setTags] = useState(existing?.tags.join(', ') ?? '')
   const [notes, setNotes] = useState(existing?.notes ?? '')
+  const [specs, setSpecs] = useState<{ label: string; value: string }[]>(
+    existing?.specs?.map((s) => ({ ...s })) ?? [],
+  )
+
+  function setSpec(index: number, field: 'label' | 'value', text: string) {
+    setSpecs(specs.map((s, i) => (i === index ? { ...s, [field]: text } : s)))
+  }
 
   if (id && !existing) {
     return (
@@ -36,6 +46,9 @@ export default function ItemForm() {
     e.preventDefault()
     const trimmed = name.trim()
     if (!trimmed) return
+    const cleanSpecs = specs
+      .map((s) => ({ label: s.label.trim(), value: s.value.trim() }))
+      .filter((s) => s.label && s.value)
     const item = {
       id: existing?.id ?? newId(),
       name: trimmed,
@@ -49,6 +62,11 @@ export default function ItemForm() {
         caseWeight.trim() === '' ? undefined : Math.max(0, Math.round(Number(caseWeight))),
       placement: placement.trim() || undefined,
       kit: kit.trim() === '' ? undefined : Math.max(1, Math.round(Number(kit))),
+      maxLoadGrams:
+        categoryId !== BACKPACK_CATEGORY || maxLoad.trim() === ''
+          ? undefined
+          : Math.max(0, Math.round(Number(maxLoad.replace(',', '.')) * 1000)),
+      specs: cleanSpecs.length > 0 ? cleanSpecs : undefined,
       notes: notes.trim(),
       photo: existing?.photo ?? null,
     }
@@ -110,6 +128,21 @@ export default function ItemForm() {
           />
         </label>
 
+        {categoryId === BACKPACK_CATEGORY && (
+          <label>
+            {t('form.maxLoad')} <span className="hint">{t('form.maxLoadHint')}</span>
+            <input
+              type="number"
+              inputMode="decimal"
+              min="0"
+              step="0.1"
+              value={maxLoad}
+              onChange={(e) => setMaxLoad(e.target.value)}
+              placeholder="0"
+            />
+          </label>
+        )}
+
         <label>
           {t('item.placement')} <span className="hint">{t('form.placementHint')}</span>
           <input
@@ -140,6 +173,41 @@ export default function ItemForm() {
             placeholder={t('form.tagsPlaceholder')}
           />
         </label>
+
+        <fieldset className="specs-editor">
+          <legend>{t('item.specs')}</legend>
+          {specs.map((spec, i) => (
+            <div key={i} className="spec-row">
+              <input
+                value={spec.label}
+                onChange={(e) => setSpec(i, 'label', e.target.value)}
+                placeholder={t('form.specLabelPlaceholder')}
+                aria-label={t('form.specLabelPlaceholder')}
+              />
+              <input
+                value={spec.value}
+                onChange={(e) => setSpec(i, 'value', e.target.value)}
+                placeholder={t('form.specValuePlaceholder')}
+                aria-label={t('form.specValuePlaceholder')}
+              />
+              <button
+                type="button"
+                className="row-remove"
+                aria-label={t('form.specRemove')}
+                onClick={() => setSpecs(specs.filter((_, j) => j !== i))}
+              >
+                −
+              </button>
+            </div>
+          ))}
+          <button
+            type="button"
+            className="btn btn-small"
+            onClick={() => setSpecs([...specs, { label: '', value: '' }])}
+          >
+            {t('form.specAdd')}
+          </button>
+        </fieldset>
 
         <label>
           {t('item.notes')}

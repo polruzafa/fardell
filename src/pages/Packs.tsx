@@ -8,6 +8,7 @@ import {
   formatWeight,
   itemOf,
   newId,
+  packLoadPercent,
   packWeight,
   packWeightByCategory,
   useStore,
@@ -102,12 +103,21 @@ export default function Packs() {
       <ul className="cards">
         {data.packs.map((pack) => {
           const backpack = itemOf(data, pack.backpackId)
+          const pct = packLoadPercent(data, pack)
           return (
             <li key={pack.id}>
               <Link to={`/motxilles/${pack.id}`} className="card card-link">
                 <div className="card-head">
                   <span className="card-title">{pack.name}</span>
-                  <span className="mono">{formatWeight(packWeight(data, pack))}</span>
+                  <span className="mono">
+                    {formatWeight(packWeight(data, pack))}
+                    {pct != null && (
+                      <>
+                        {' · '}
+                        <span className={pct > 100 ? 'load-over' : undefined}>{pct} %</span>
+                      </>
+                    )}
+                  </span>
                 </div>
                 <p className="card-sub">
                   {backpack?.name ?? t('packs.unknownBackpack')} · {pack.itemIds.length}{' '}
