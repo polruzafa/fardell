@@ -204,6 +204,16 @@
       "specs": [{ "label": "Capacidad", "value": "500 ml" }]
     },
     {
+      "id": "lixada-300-pot",
+      "name": "olla LIXADA titanium 300ml",
+      "categoryId": "cocina",
+      "tags": ["olla", "titanio", "ultralight"],
+      "weightGrams": 86,
+      "notes": "",
+      "photo": null,
+      "specs": [{ "label": "Capacidad", "value": "300 ml" }]
+    },
+    {
       "id": "optimus-long-spoon",
       "name": "cuchara larga titanium OPTIMUS",
       "categoryId": "cocina",
