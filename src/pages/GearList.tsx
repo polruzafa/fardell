@@ -64,6 +64,7 @@ export default function GearList() {
       <div className="chips" role="group" aria-label={t('gear.filterByCategory')}>
         <button
           className={`chip${categoryFilter === null ? ' chip-on' : ''}`}
+          aria-pressed={categoryFilter === null}
           onClick={() => setCategoryFilter(null)}
         >
           {t('gear.all')}
@@ -72,6 +73,7 @@ export default function GearList() {
           <button
             key={c.id}
             className={`chip${categoryFilter === c.id ? ' chip-on' : ''}`}
+            aria-pressed={categoryFilter === c.id}
             style={{ '--chip-color': c.color } as React.CSSProperties}
             onClick={() => setCategoryFilter(categoryFilter === c.id ? null : c.id)}
           >

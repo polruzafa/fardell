@@ -50,7 +50,7 @@ function ReviewCard({ data, review }: { data: GearData; review: Review }) {
   return (
     <div className="card card-link review-card">
       <div className="card-head">
-        <Link to={`/receptes/${review.id}`} className="card-title card-title-link">
+        <Link to={`/menjar/${review.id}`} className="card-title card-title-link">
           {review.name}
         </Link>
         {score !== null && (
@@ -125,7 +125,7 @@ export default function ReviewsPage() {
     <>
       <div className="page-head">
         <h1>{t('tabs.reviews')}</h1>
-        <Link to="/receptes/nova" className="btn btn-primary">
+        <Link to="/menjar/nova" className="btn btn-primary">
           {t('reviews.new')}
         </Link>
       </div>

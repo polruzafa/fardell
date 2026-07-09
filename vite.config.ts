@@ -44,7 +44,9 @@ export default defineConfig({
         lang: 'ca',
         display: 'standalone',
         start_url: '.',
-        theme_color: '#1f261e',
+        // El paper del tema per defecte (pedra clar); en marxa, src/theme.tsx
+        // actualitza la <meta> perquè segueixi el tema actiu.
+        theme_color: '#eef0ea',
         background_color: '#eef0ea',
         icons: [
           { src: 'icons/icon-192.png', sizes: '192x192', type: 'image/png' },

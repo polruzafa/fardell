@@ -7,9 +7,11 @@
   --card: #f9faf6;
   --ink: #1f261e;
   --ink-soft: #5a6255;
-  --line: #d7dbce;
+  --line: #d7dbce; /* separadors i vores decoratives, expressament subtils */
+  --line-strong: #868b81; /* vores de camps de text (≥3:1, WCAG 1.4.11) */
   --accent: #e8541d;
-  --accent-ink: #fff8f3;
+  --accent-ink: #fff8f3; /* el text dels botons primaris, sobre --accent-text (≥4,5:1) */
+  --accent-text: #be4518; /* l'accent quan fa de text petit o de fons de botó (≥4,5:1) */
   --danger: #b0413e;
   --warn: #8a6a1f;
   --warn-bg: rgba(201, 154, 60, 0.14);
@@ -31,8 +33,10 @@
   --ink: #e9ece3;
   --ink-soft: #9aa393;
   --line: #333b31;
+  --line-strong: #6b7268;
   --accent: #f2622a;
-  --accent-ink: #fff8f3;
+  --accent-ink: #171c16;
+  --accent-text: #f2622a;
   --danger: #d16663;
   --warn: #d8b25e;
   --warn-bg: rgba(201, 154, 60, 0.14);
@@ -52,8 +56,10 @@
   --ink: #1c1c1e;
   --ink-soft: #6d6d72;
   --line: #d9d9de;
-  --accent: #007aff;
+  --line-strong: #8d8d91;
+  --accent: #006be0; /* el blau d'iOS una mica més fosc, perquè el text blanc hi arribi a AA */
   --accent-ink: #ffffff;
+  --accent-text: #006be0;
   --danger: #d70015;
   --warn: #a05a00;
   --warn-bg: rgba(255, 149, 0, 0.12);
@@ -66,8 +72,10 @@
   --ink: #ffffff;
   --ink-soft: #98989e;
   --line: #38383a;
+  --line-strong: #686869;
   --accent: #0a84ff;
-  --accent-ink: #ffffff;
+  --accent-ink: #000000; /* text fosc sobre primari clar, com el tema fosc de Material */
+  --accent-text: #0a84ff;
   --danger: #ff453a;
   --warn: #ff9f0a;
   --warn-bg: rgba(255, 159, 10, 0.12);
@@ -81,8 +89,10 @@
   --ink: #1e1e1e;
   --ink-soft: #6b6b6b;
   --line: #ddd6c8;
+  --line-strong: #8f8b82;
   --accent: #2f5d50;
   --accent-ink: #f2efe8;
+  --accent-text: #2f5d50;
   --danger: #c0392b;
   --warn: #b05e14;
   --warn-bg: rgba(230, 126, 34, 0.12);
@@ -95,8 +105,10 @@
   --ink: #f0ede5;
   --ink-soft: #b0ab9f;
   --line: #3d3a32;
+  --line-strong: #747169;
   --accent: #7bae7f;
   --accent-ink: #1c2a1e;
+  --accent-text: #7bae7f;
   --danger: #e06060;
   --warn: #e89b5a;
   --warn-bg: rgba(232, 155, 90, 0.15);
@@ -110,8 +122,10 @@
   --ink: #111111;
   --ink-soft: #6f6f6f;
   --line: #e0e0e0;
+  --line-strong: #8f8f8f;
   --accent: #0e7c66;
   --accent-ink: #f2fbf8;
+  --accent-text: #0e7c66;
   --danger: #cf3a2b;
   --warn: #8f7412;
   --warn-bg: rgba(244, 196, 48, 0.15);
@@ -124,8 +138,10 @@
   --ink: #f0f0f0;
   --ink-soft: #909090;
   --line: #2c3532;
+  --line-strong: #676d6b;
   --accent: #1fa38c;
   --accent-ink: #0a1512;
+  --accent-text: #1fa38c;
   --danger: #e74c3c;
   --warn: #f4c430;
   --warn-bg: rgba(244, 196, 48, 0.15);
@@ -139,8 +155,10 @@
   --ink: #1f3d2b;
   --ink-soft: #7a8a7f;
   --line: #e9e4d8;
+  --line-strong: #869283;
   --accent: #1f3d2b;
   --accent-ink: #f4f1e8;
+  --accent-text: #1f3d2b;
   --danger: #c94c4c;
   --warn: #a37b1e;
   --warn-bg: rgba(212, 168, 71, 0.14);
@@ -153,8 +171,10 @@
   --ink: #e9e4d8;
   --ink-soft: #a0a095;
   --line: #37453c;
+  --line-strong: #70786e;
   --accent: #8fb297;
   --accent-ink: #14231a;
+  --accent-text: #8fb297;
   --danger: #e06969;
   --warn: #e8c57f;
   --warn-bg: rgba(232, 197, 127, 0.14);
@@ -271,7 +291,7 @@ body {
 }
 
 .tab.active {
-  color: var(--accent);
+  color: var(--accent-text);
 }
 
 /* ── Capçaleres i text ── */
@@ -328,7 +348,7 @@ h2 {
 
 .backlink:hover,
 .inline-link:hover {
-  color: var(--accent);
+  color: var(--accent-text);
 }
 
 .inline-link {
@@ -356,9 +376,11 @@ h2 {
   text-align: center;
 }
 
+/* El fons és --accent-text (no --accent): és la variant de l'accent amb prou
+   contrast perquè el text del botó hi arribi a AA en tots els temes. */
 .btn-primary {
-  background: var(--accent);
-  border-color: var(--accent);
+  background: var(--accent-text);
+  border-color: var(--accent-text);
   color: var(--accent-ink);
 }
 
@@ -374,7 +396,7 @@ h2 {
 .search {
   width: 100%;
   padding: 10px 14px;
-  border: 1px solid var(--line);
+  border: 1px solid var(--line-strong);
   border-radius: var(--radius);
   background: var(--card);
   color: var(--ink);
@@ -419,9 +441,10 @@ h2 {
   cursor: pointer;
 }
 
+/* La selecció es marca amb l'accent, com a les files del selector de tema. */
 .chip-on {
-  border-color: var(--ink);
-  box-shadow: inset 0 0 0 1px var(--ink);
+  border-color: var(--accent);
+  box-shadow: inset 0 0 0 1px var(--accent);
 }
 
 .dot {
@@ -431,12 +454,101 @@ h2 {
   border-radius: 3px;
   flex-shrink: 0;
   margin-right: 2px;
+  /* Un filet: els colors de categoria els tria l'usuari i poden acostar-se
+     al color del paper; sense el filet, desapareixerien. */
+  box-shadow: inset 0 0 0 1px rgba(128, 128, 128, 0.3);
 }
 
-/* Mostres de color dins de xips (el selector de tema): un filet perquè les
-   mostres fosques es vegin sobre fons fosc. */
-.chip .dot {
+/* ── Selector de tema ──
+   Llista vertical a l'estil de la bitácora: cada fila mostra les mostres de
+   color del tema, el nom, i un senyal a la fila triada. */
+.theme-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.theme-option {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--card);
+  color: var(--ink);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.theme-option-on {
+  border-color: var(--accent);
+  box-shadow: inset 0 0 0 1px var(--accent);
+}
+
+.theme-swatches {
+  display: flex;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.theme-swatch {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+}
+
+/* La mostra del paper: un filet perquè es vegi sobre el fons de la fila. */
+.theme-swatch-paper {
   box-shadow: inset 0 0 0 1px rgba(128, 128, 128, 0.45);
+}
+
+.theme-label {
+  flex: 1;
+}
+
+.theme-option-on .theme-label {
+  font-weight: 700;
+  color: var(--accent-text);
+}
+
+.theme-check {
+  color: var(--accent-text);
+  font-weight: 700;
+}
+
+/* ── Seccions dels Ajustos ──
+   Un filet entre secció i secció, amb aire, perquè la pàgina llarga
+   es llegeixi per blocs. */
+.settings-section {
+  margin-top: 24px;
+}
+
+.settings-section + .settings-section {
+  border-top: 1px solid var(--line);
+  padding-top: 16px;
+  margin-top: 28px;
+}
+
+.settings-section > h2 {
+  margin-top: 0;
+}
+
+/* La zona perillosa, tancada amb un filet vermell: aquí es perden dades. */
+.danger-zone {
+  border: 1px solid var(--danger);
+  border-radius: var(--radius);
+  padding: 12px 16px 16px;
+}
+
+.danger-zone .hint {
+  margin: 0 0 12px;
+}
+
+.danger-zone .actions {
+  margin: 0;
 }
 
 /* ── Llistes d'elements ── */
@@ -552,6 +664,27 @@ h2 {
   cursor: pointer;
 }
 
+/* Zona de toc més gran que el cercle visible (halo invisible): els botons
+   rodons fan 24–34 px, però el dit necessita més marge. El -5px no arriba
+   a trepitjar el veí (els controls van amb separacions de 6–8 px). */
+.row-plus,
+.row-remove,
+.ctrl-btn,
+.icon-btn,
+.star-btn {
+  position: relative;
+}
+
+.row-plus::before,
+.row-remove::before,
+.ctrl-btn::before,
+.icon-btn::before,
+.star-btn::before {
+  content: '';
+  position: absolute;
+  inset: -5px;
+}
+
 .row-plus {
   color: var(--accent);
   border-color: var(--accent);
@@ -623,6 +756,8 @@ h2 {
 
 .weightbar-seg {
   min-width: 3px;
+  /* El mateix filet que .dot, pel mateix motiu: cap segment invisible. */
+  box-shadow: inset 0 0 0 1px rgba(128, 128, 128, 0.3);
 }
 
 .weightbar-legend {
@@ -659,12 +794,15 @@ h2 {
   overflow: hidden;
 }
 
+/* El farciment s'anima amb transform (no amb width): només compositor. */
 .loadgauge-bar span {
   display: block;
+  width: 100%;
   height: 100%;
   border-radius: 4px;
   background: var(--accent);
-  transition: width 0.3s ease;
+  transform-origin: left;
+  transition: transform 0.3s ease;
 }
 
 .loadgauge-over .loadgauge-bar span {
@@ -732,7 +870,7 @@ h2 {
   width: 26px;
   height: 26px;
   padding: 2px;
-  border: 1px solid var(--line);
+  border: 1px solid var(--line-strong);
   border-radius: 7px;
   background: var(--card);
   flex-shrink: 0;
@@ -753,13 +891,13 @@ h2 {
 
 .cat-name:hover,
 .cat-name:focus {
-  border-color: var(--line);
+  border-color: var(--line-strong);
   background: var(--card);
 }
 
 /* El camp per afegir-ne sí que es mostra sempre com a camp */
 .cat-add .cat-name {
-  border-color: var(--line);
+  border-color: var(--line-strong);
   background: var(--card);
 }
 
@@ -785,7 +923,7 @@ h2 {
 .paste-box {
   width: 100%;
   padding: 10px 12px;
-  border: 1px solid var(--line);
+  border: 1px solid var(--line-strong);
   border-radius: var(--radius);
   background: var(--card);
   color: var(--ink);
@@ -806,9 +944,13 @@ h2 {
   margin: 8px 0 0;
 }
 
+/* Inhabilitat: es rebaixa el to, però l'etiqueta continua sent llegible
+   (res d'opacitat sobre tot el botó, que la feia desaparèixer). */
 .btn:disabled {
-  opacity: 0.45;
   cursor: default;
+  background: var(--card);
+  border-color: var(--line);
+  color: var(--ink-soft);
 }
 
 /* ── Detall ── */
@@ -909,7 +1051,7 @@ h2 {
   flex: 1;
   min-width: 0;
   padding: 6px 12px;
-  border: 1px solid var(--line);
+  border: 1px solid var(--line-strong);
   border-radius: var(--radius);
   background: var(--card);
   color: var(--ink);
@@ -935,7 +1077,8 @@ h2 {
 }
 
 .facts dt {
-  width: 110px;
+  /* Prou ample per a les etiquetes llargues traduïdes, sense menjar-se el valor. */
+  width: clamp(110px, 32%, 150px);
   flex-shrink: 0;
   color: var(--ink-soft);
   font-family: var(--font-display);
@@ -971,7 +1114,7 @@ h2 {
 
 .tag-link:hover {
   border-color: var(--accent);
-  color: var(--accent);
+  color: var(--accent-text);
 }
 
 /* ── Formularis ── */
@@ -998,7 +1141,7 @@ h2 {
 .form select,
 .form textarea {
   padding: 10px 12px;
-  border: 1px solid var(--line);
+  border: 1px solid var(--line-strong);
   border-radius: var(--radius);
   background: var(--card);
   color: var(--ink);
@@ -1207,7 +1350,7 @@ h2 {
 .row-ctrls {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
 }
 
 .ctrl-btn {

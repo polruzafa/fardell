@@ -98,7 +98,7 @@ export default function ReviewForm() {
     return (
       <div className="empty">
         <p>{t('review.missing')}</p>
-        <Link to="/receptes" className="btn">
+        <Link to="/menjar" className="btn">
           {t('review.backToReviews')}
         </Link>
       </div>
@@ -177,7 +177,7 @@ export default function ReviewForm() {
       window.alert(t('item.photoError'))
     }
     dispatch({ type: existing ? 'review/update' : 'review/add', review })
-    navigate('/receptes')
+    navigate('/menjar')
   }
 
   function remove() {
@@ -185,7 +185,7 @@ export default function ReviewForm() {
     if (!window.confirm(t('review.confirmDelete', { name: existing.name }))) return
     void deletePhoto(existing.id)
     dispatch({ type: 'review/delete', id: existing.id })
-    navigate('/receptes')
+    navigate('/menjar')
   }
 
   return (
@@ -535,7 +535,7 @@ export default function ReviewForm() {
           <button type="submit" className="btn btn-primary" disabled={score === null}>
             {t('common.save')}
           </button>
-          <button type="button" className="btn" onClick={() => navigate('/receptes')}>
+          <button type="button" className="btn" onClick={() => navigate('/menjar')}>
             {t('common.cancel')}
           </button>
           {existing && (

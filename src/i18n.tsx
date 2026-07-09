@@ -17,8 +17,7 @@ const ca = {
   'tabs.gear': 'Material',
   'tabs.kits': 'Kits',
   'tabs.packs': 'Motxilles',
-  'tabs.reviews': 'Receptes',
-  'tabs.data': 'Dades',
+  'tabs.reviews': 'Menjar',
 
   'common.item': 'element',
   'common.items': 'elements',
@@ -142,7 +141,7 @@ const ca = {
   'review.delete': 'Suprimeix la ressenya',
   'review.confirmDelete': 'Voleu suprimir la ressenya «{name}»?',
   'review.missing': 'Aquesta ressenya ja no existeix.',
-  'review.backToReviews': 'Torna a les receptes',
+  'review.backToReviews': 'Torna al menjar',
 
   'packs.new': 'Prepara’n una',
   'packs.tripName': 'Nom de la sortida',
@@ -178,6 +177,10 @@ const ca = {
   'settings.scheme': 'Clar o fosc',
   'settings.version': 'Versió',
   'settings.account': 'Compte',
+  'settings.backup': 'Còpia de seguretat',
+  'settings.danger': 'Zona perillosa',
+  'settings.dangerHint':
+    'Descarta totes les dades d’aquest dispositiu i torna a les d’exemple. No es pot desfer.',
 
   'theme.pedra': 'Pedra',
   'theme.estandard': 'Estàndard',
@@ -269,8 +272,7 @@ const es: Record<TKey, string> = {
   'tabs.gear': 'Material',
   'tabs.kits': 'Kits',
   'tabs.packs': 'Mochilas',
-  'tabs.reviews': 'Recetas',
-  'tabs.data': 'Datos',
+  'tabs.reviews': 'Comida',
 
   'common.item': 'elemento',
   'common.items': 'elementos',
@@ -395,7 +397,7 @@ const es: Record<TKey, string> = {
   'review.delete': 'Eliminar la reseña',
   'review.confirmDelete': '¿Quieres eliminar la reseña «{name}»?',
   'review.missing': 'Esta reseña ya no existe.',
-  'review.backToReviews': 'Volver a las recetas',
+  'review.backToReviews': 'Volver a la comida',
 
   'packs.new': 'Preparar una',
   'packs.tripName': 'Nombre de la salida',
@@ -431,6 +433,10 @@ const es: Record<TKey, string> = {
   'settings.scheme': 'Claro u oscuro',
   'settings.version': 'Versión',
   'settings.account': 'Cuenta',
+  'settings.backup': 'Copia de seguridad',
+  'settings.danger': 'Zona peligrosa',
+  'settings.dangerHint':
+    'Descarta todos los datos de este dispositivo y vuelve a los de ejemplo. No se puede deshacer.',
 
   'theme.pedra': 'Piedra',
   'theme.estandard': 'Estándar',
@@ -520,8 +526,7 @@ const en: Record<TKey, string> = {
   'tabs.gear': 'Gear',
   'tabs.kits': 'Kits',
   'tabs.packs': 'Packs',
-  'tabs.reviews': 'Recipes',
-  'tabs.data': 'Data',
+  'tabs.reviews': 'Food',
 
   'common.item': 'item',
   'common.items': 'items',
@@ -645,7 +650,7 @@ const en: Record<TKey, string> = {
   'review.delete': 'Delete review',
   'review.confirmDelete': 'Delete the review “{name}”?',
   'review.missing': 'This review no longer exists.',
-  'review.backToReviews': 'Back to recipes',
+  'review.backToReviews': 'Back to food',
 
   'packs.new': 'Prepare one',
   'packs.tripName': 'Trip name',
@@ -681,6 +686,10 @@ const en: Record<TKey, string> = {
   'settings.scheme': 'Light or dark',
   'settings.version': 'Version',
   'settings.account': 'Account',
+  'settings.backup': 'Backup',
+  'settings.danger': 'Danger zone',
+  'settings.dangerHint':
+    'Discards all the data on this device and returns to the sample data. It cannot be undone.',
 
   'theme.pedra': 'Stone',
   'theme.estandard': 'Standard',

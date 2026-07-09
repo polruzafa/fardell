@@ -9,13 +9,53 @@ import type { TKey } from './i18n'
 export type ThemeId = 'pedra' | 'estandard' | 'mediterrania' | 'highperformance' | 'minimalista'
 export type SchemeMode = 'system' | 'light' | 'dark'
 
-/** El color de mostra del selector: l'accent de la variant clara del tema. */
-export const THEMES: { id: ThemeId; labelKey: TKey; swatch: string }[] = [
-  { id: 'pedra', labelKey: 'theme.pedra', swatch: '#e8541d' },
-  { id: 'estandard', labelKey: 'theme.estandard', swatch: '#007aff' },
-  { id: 'mediterrania', labelKey: 'theme.mediterrania', swatch: '#2f5d50' },
-  { id: 'highperformance', labelKey: 'theme.highperformance', swatch: '#0e7c66' },
-  { id: 'minimalista', labelKey: 'theme.minimalista', swatch: '#1f3d2b' },
+/** Mostres del selector: quatre colors representatius de cada variant
+ * (l'accent, dos de secundaris i el paper), trets de styles.css. */
+export const THEMES: {
+  id: ThemeId
+  labelKey: TKey
+  swatches: { light: string[]; dark: string[] }
+}[] = [
+  {
+    id: 'pedra',
+    labelKey: 'theme.pedra',
+    swatches: {
+      light: ['#e8541d', '#5e7d4f', '#8a6a1f', '#eef0ea'],
+      dark: ['#f2622a', '#86a874', '#d8b25e', '#171c16'],
+    },
+  },
+  {
+    id: 'estandard',
+    labelKey: 'theme.estandard',
+    swatches: {
+      light: ['#006be0', '#248a3d', '#a05a00', '#ffffff'],
+      dark: ['#0a84ff', '#30d158', '#ff9f0a', '#000000'],
+    },
+  },
+  {
+    id: 'mediterrania',
+    labelKey: 'theme.mediterrania',
+    swatches: {
+      light: ['#2f5d50', '#4d7a52', '#b05e14', '#f4f1ea'],
+      dark: ['#7bae7f', '#e89b5a', '#e06060', '#1f1d17'],
+    },
+  },
+  {
+    id: 'highperformance',
+    labelKey: 'theme.highperformance',
+    swatches: {
+      light: ['#0e7c66', '#1e8a4c', '#8f7412', '#f8f8f8'],
+      dark: ['#1fa38c', '#2fb36f', '#f4c430', '#0f1614'],
+    },
+  },
+  {
+    id: 'minimalista',
+    labelKey: 'theme.minimalista',
+    swatches: {
+      light: ['#1f3d2b', '#2e7d52', '#a37b1e', '#ffffff'],
+      dark: ['#8fb297', '#e8c57f', '#e06969', '#1a2820'],
+    },
+  },
 ]
 
 export const SCHEME_MODES: { id: SchemeMode; labelKey: TKey }[] = [
@@ -42,6 +82,14 @@ function loadMode(): SchemeMode {
   return saved === 'light' || saved === 'dark' ? saved : 'system'
 }
 
+/* La barra del sistema (PWA instal·lada) segueix el color del paper del tema
+ * actiu. Es llegeix la variable CSS ja resolta, així no es dupliquen valors. */
+function updateThemeColorMeta() {
+  const meta = document.querySelector('meta[name="theme-color"]')
+  const paper = getComputedStyle(document.documentElement).getPropertyValue('--paper').trim()
+  if (meta && paper) meta.setAttribute('content', paper)
+}
+
 type ThemeContextValue = {
   theme: ThemeId
   setTheme: (theme: ThemeId) => void
@@ -58,6 +106,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     document.documentElement.dataset.theme = theme
     localStorage.setItem(THEME_KEY, theme)
+    updateThemeColorMeta()
   }, [theme])
 
   useEffect(() => {
@@ -66,6 +115,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     const apply = () => {
       document.documentElement.dataset.scheme =
         mode === 'system' ? (media.matches ? 'dark' : 'light') : mode
+      updateThemeColorMeta()
     }
     apply()
     // En mode «sistema», segueix els canvis del sistema en calent.

@@ -11,7 +11,6 @@ import KitsPage from './pages/KitsPage'
 import Packs from './pages/Packs'
 import ReviewForm from './pages/ReviewForm'
 import ReviewsPage from './pages/ReviewsPage'
-import DataPage from './pages/DataPage'
 import SettingsPage from './pages/SettingsPage'
 
 function Layout() {
@@ -50,26 +49,21 @@ function Layout() {
           <TabIcon kind="pack" />
           {t('tabs.packs')}
         </NavLink>
-        <NavLink to="/receptes" className="tab">
+        <NavLink to="/menjar" className="tab">
           <TabIcon kind="review" />
           {t('tabs.reviews')}
-        </NavLink>
-        <NavLink to="/dades" className="tab">
-          <TabIcon kind="data" />
-          {t('tabs.data')}
         </NavLink>
       </nav>
     </div>
   )
 }
 
-function TabIcon({ kind }: { kind: 'gear' | 'kit' | 'pack' | 'review' | 'data' }) {
+function TabIcon({ kind }: { kind: 'gear' | 'kit' | 'pack' | 'review' }) {
   const paths = {
     gear: 'M4 7h16M4 12h16M4 17h10',
     kit: 'M12 3l8 4.5v9L12 21l-8-4.5v-9L12 3Zm0 9v9m0-9L4 7.5M12 12l8-4.5',
     pack: 'M8 7V5a4 4 0 0 1 8 0v2m-9 0h10a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2Zm1 7h8',
     review: 'M4 13a8 8 0 0 0 16 0H4Zm-1 0h18M9 9V6m3 3V5m3 4V6',
-    data: 'M12 3c4.4 0 8 1.3 8 3s-3.6 3-8 3-8-1.3-8-3 3.6-3 8-3Zm-8 3v12c0 1.7 3.6 3 8 3s8-1.3 8-3V6M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3',
   }
   return (
     <svg viewBox="0 0 24 24" aria-hidden="true" className="tab-icon">
@@ -95,10 +89,13 @@ export default function App() {
                   <Route path="kits/:id" element={<GroupDetail />} />
                   <Route path="motxilles" element={<Packs />} />
                   <Route path="motxilles/:id" element={<GroupDetail />} />
-                  <Route path="receptes" element={<ReviewsPage />} />
-                  <Route path="receptes/nova" element={<ReviewForm />} />
-                  <Route path="receptes/:id" element={<ReviewForm />} />
-                  <Route path="dades" element={<DataPage />} />
+                  <Route path="menjar" element={<ReviewsPage />} />
+                  <Route path="menjar/nova" element={<ReviewForm />} />
+                  <Route path="menjar/:id" element={<ReviewForm />} />
+                  {/* Rutes velles: la pàgina de dades es va fondre dins dels
+                      Ajustos, i «receptes» es va reanomenar «menjar». */}
+                  <Route path="dades" element={<Navigate to="/ajustos" replace />} />
+                  <Route path="receptes" element={<Navigate to="/menjar" replace />} />
                   <Route path="ajustos" element={<SettingsPage />} />
                   <Route path="*" element={<Navigate to="/" replace />} />
                 </Route>

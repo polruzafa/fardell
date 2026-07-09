@@ -198,7 +198,7 @@ export default function GroupDetail() {
       {backpack?.maxLoadGrams != null && pct != null && (
         <div className={`loadgauge${pct > 100 ? ' loadgauge-over' : ''}`}>
           <div className="loadgauge-bar">
-            <span style={{ width: `${Math.min(pct, 100)}%` }} />
+            <span style={{ transform: `scaleX(${Math.min(pct, 100) / 100})` }} />
           </div>
           <p className="hint">
             <span className="mono">
