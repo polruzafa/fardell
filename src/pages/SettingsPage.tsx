@@ -3,13 +3,7 @@ import { defaultServerUrl, useAccount } from '../account'
 import { getLocale, LANGS, useI18n, type TKey } from '../i18n'
 import { parseItemsJson, pickCategoryColor, slugify, type ImportIssue } from '../itemsImport'
 import { prunePhotos } from '../photos'
-import {
-  formatWeight,
-  parseGearData,
-  seedData,
-  useStore,
-  type Category,
-} from '../store'
+import { formatWeight, parseGearData, useStore, type Category } from '../store'
 import { SCHEME_MODES, THEMES, useTheme } from '../theme'
 
 export default function SettingsPage() {
@@ -125,9 +119,8 @@ function DangerSection() {
   function reset() {
     if (!window.confirm(t('data.resetConfirm'))) return
     dispatch({ type: 'data/reset' })
-    void prunePhotos(
-      new Set([...seedData.items.map((it) => it.id), ...seedData.reviews.map((r) => r.id)]),
-    )
+    // Les dades inicials no tenen cap element: fora totes les fotografies.
+    void prunePhotos(new Set())
   }
 
   return (

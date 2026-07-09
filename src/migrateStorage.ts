@@ -1,8 +1,10 @@
-// Migració única del canvi de nom (For·Gear → Fardell, juliol del 2026):
-// mou les claus de localStorage i la base de fotografies d'IndexedDB al nom
-// nou, sense perdre res. S'executa abans de renderitzar (vegeu main.tsx) i no
-// fa res si no hi ha rastres del nom antic. Es podrà esborrar quan tots els
-// dispositius s'hagin actualitzat.
+// Migracions úniques d'arrencada. S'executen abans de renderitzar (vegeu
+// main.tsx) i no fan res si no hi ha rastres antics:
+//  - Canvi de nom (For·Gear → Fardell, juliol del 2026): mou les claus de
+//    localStorage i la base de fotografies d'IndexedDB al nom nou.
+//  - Retirada de la llavor (juliol del 2026): la clau «fardell:seed-base» de
+//    la fusió amb la llavor ja no serveix; les dades són 100 % de l'usuari.
+// Es podrà esborrar quan tots els dispositius s'hagin actualitzat.
 
 const OLD_PREFIX = 'for-gear:'
 const NEW_PREFIX = 'fardell:'
@@ -20,6 +22,8 @@ function migrateLocalStorage(): void {
     }
     localStorage.removeItem(key)
   }
+  // El bucle de dalt ja ha mogut qualsevol «for-gear:seed-base» al nom nou.
+  localStorage.removeItem('fardell:seed-base')
 }
 
 function openDb(name: string): Promise<IDBDatabase> {

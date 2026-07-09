@@ -321,6 +321,14 @@ h2 {
   margin-top: 4px;
 }
 
+/* Més d'una acció a la capçalera (p. ex. «Catàleg» + «Afegeix»). */
+.page-head-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
 .tally {
   color: var(--ink-soft);
   font-size: 0.85rem;

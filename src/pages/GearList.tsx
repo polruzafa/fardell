@@ -1,7 +1,12 @@
 import { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { catalogItems } from '../catalog'
 import { useI18n } from '../i18n'
 import { categoryOf, formatWeight, useStore, type GearItem } from '../store'
+
+// El botó del catàleg només apareix quan el catàleg duu alguna entrada (ara
+// mateix es distribueix buit; vegeu src/catalog.ts).
+const hasCatalog = catalogItems.length > 0
 
 export default function GearList() {
   const { data } = useStore()
@@ -42,9 +47,16 @@ export default function GearList() {
     <>
       <div className="page-head">
         <h1>{t('tabs.gear')}</h1>
-        <Link to="/element/nou" className="btn btn-primary">
-          {t('gear.add')}
-        </Link>
+        <div className="page-head-actions">
+          {hasCatalog && (
+            <Link to="/cataleg" className="btn">
+              {t('gear.catalog')}
+            </Link>
+          )}
+          <Link to="/element/nou" className="btn btn-primary">
+            {t('gear.add')}
+          </Link>
+        </div>
       </div>
 
       <p className="tally mono">
@@ -87,9 +99,16 @@ export default function GearList() {
         <div className="empty">
           <p>{t('gear.emptyFiltered')}</p>
           {data.items.length === 0 && (
-            <Link to="/element/nou" className="btn btn-primary">
-              {t('gear.addFirst')}
-            </Link>
+            <>
+              <Link to="/element/nou" className="btn btn-primary">
+                {t('gear.addFirst')}
+              </Link>
+              {hasCatalog && (
+                <Link to="/cataleg" className="btn">
+                  {t('gear.browseCatalog')}
+                </Link>
+              )}
+            </>
           )}
         </div>
       ) : (

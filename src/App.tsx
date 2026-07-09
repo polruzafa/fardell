@@ -3,6 +3,7 @@ import { AccountProvider } from './account'
 import { I18nProvider, useI18n } from './i18n'
 import { StoreProvider } from './store'
 import { ThemeProvider } from './theme'
+import CatalogPage from './pages/CatalogPage'
 import GearList from './pages/GearList'
 import GroupDetail from './pages/GroupDetail'
 import ItemDetail from './pages/ItemDetail'
@@ -82,6 +83,7 @@ export default function App() {
               <Routes>
                 <Route element={<Layout />}>
                   <Route index element={<GearList />} />
+                  <Route path="cataleg" element={<CatalogPage />} />
                   <Route path="element/nou" element={<ItemForm />} />
                   <Route path="element/:id" element={<ItemDetail />} />
                   <Route path="element/:id/edita" element={<ItemForm />} />

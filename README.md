@@ -7,16 +7,15 @@ PWA per portar l'inventari de material de muntanya i preparar motxilles. Local p
 - **Material**: llista de tot l'equip, amb cerca i filtre per categoria. Cada element té fitxa pròpia (categoria, pes, etiquetes, notes, característiques i foto local).
 - **Kits**: grups de material amb nom («kit arròs», «kit mess tin»…) que es poden reutilitzar i imbricar: un kit pot contenir altres kits.
 - **Motxilles**: tria una motxilla del material (categoria «Mochilas») i omple-la amb elements i kits sencers. Mostra el pes total, el percentatge de càrrega i una barra de pes per categories. Cada pertinença té **quantitat** (2 cantimplores) i pot marcar-se **«a sobre»** (roba posada, bastons): surt a la llista però no compta en el pes transportat. Si una mateixa peça arriba per dos camins val la quantitat més gran (és la mateixa peça física), i no s'hi poden crear cicles. Els elements de la categoria «Mochilas» no s'afegeixen mai com a contingut solt: una motxilla només entra en un grup com a contenidor o com a grup imbricat.
-- **Dades**: exporta o importa el JSON sencer, torna a les dades d'exemple, o **afegeix elements enganxant JSON** (additiu, amb comprovació de format; accepta els camps de l'app i els del format original de l'inventari).
+- **Dades** (dins dels *Ajustos*): exporta o importa el JSON sencer, buida les dades, o **afegeix elements enganxant JSON** (additiu, amb comprovació de format; accepta els camps de l'app i els del format original de l'inventari).
 - **Dependències**: un element pot declarar `needs` (etiquetes que un altre element del grup ha de tenir, com ara `fuel` o `mechero`); si no es cobreixen, la motxilla o el kit mostren un avís de «possibles oblits» sense bloquejar res.
 - **Temes**: cinc paletes de colors triables als *Ajustos* (`src/theme.tsx` i els blocs `[data-theme]` de `styles.css`), cadascuna amb variant clara i fosca: per defecte la tria el sistema, però es pot forçar. Un script d'`index.html` aplica el tema desat abans de la primera pintada. «Pedra» és l'original; la resta ve de l'app bitácora.
 
 ## Dades
 
-- La llavor és a `src/data/gear.json` i s'empaqueta amb l'app.
-- El primer cop, l'app copia la llavor a `localStorage`; a partir d'aleshores totes les edicions es desen al dispositiu.
-- **Fusió automàtica de la llavor** (`src/seedMerge.ts`): l'app recorda amb quina llavor es va fusionar per última vegada (`fardell:seed-base`). Quan un desplegament porta una llavor nova, es fusiona a l'arrencada entitat per entitat: si l'usuari no ha tocat una entitat guanya la llavor; si l'ha modificada o creada guanya l'usuari; si l'ha suprimida continua suprimida. Mai no es perd res de l'usuari.
-- Per actualitzar la llavor del repositori: *Dades → Exporta el JSON* i substituïu `src/data/gear.json` pel fitxer exportat.
+- El primer cop, l'app comença amb l'inventari **buit** i les categories inicials de `src/data/starter.json`; a partir d'aleshores tot el que hi ha és de l'usuari i es desa al dispositiu.
+- **Catàleg** (`src/data/catalog.json`, tipus a `src/catalog.ts`): una llista curada de material per triar. En triar-ne un element s'obre el formulari preomplert perquè l'usuari el personalitzi; la fitxa desada és una còpia seva (amb `catalogId` com a procedència). Ara mateix el catàleg es distribueix **buit** — el botó «Catàleg» s'amaga tot sol — i està pensat perquè més endavant l'ompli un scraper de botigues de material europees.
+- Fins al juliol del 2026 l'app duia una llavor amb material (`gear.json`) que es fusionava a cada arrencada (`seedMerge.ts`); es va retirar quan la llista va passar a ser privada. Les dades dels dispositius existents no es toquen: simplement ja no es fusionen amb res.
 
 ### Compte i sincronització
 
@@ -31,8 +30,8 @@ PWA per portar l'inventari de material de muntanya i preparar motxilles. Local p
 Les dades de l'usuari viuen a `localStorage` i no s'han de perdre mai en una actualització:
 
 1. **Camps opcionals nous**: no cal apujar `schemaVersion`; les dades velles són vàlides tal qual.
-2. **Canvis incompatibles** (renoms, canvis d'unitats o de forma): apugeu `schemaVersion` a la llavor **i** afegiu un pas a `migrate()` de `src/store.tsx` que transformi les dades antigues sense descartar-les.
-3. El reset a la llavor és només l'últim recurs, per a dades corruptes o de versions desconegudes.
+2. **Canvis incompatibles** (renoms, canvis d'unitats o de forma): apugeu `SCHEMA_VERSION` (a `src/store.tsx`, i el mateix valor a `starter.json`) **i** afegiu un pas a `migrate()` que transformi les dades antigues sense descartar-les.
+3. Tornar a l'inventari buit és només l'últim recurs, per a dades corruptes o de versions desconegudes.
 
 ## Desenvolupament
 

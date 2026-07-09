@@ -1,0 +1,78 @@
+{
+  "schemaVersion": 6,
+  "categories": [
+    {
+      "id": "mochilas",
+      "name": "Mochilas",
+      "color": "#8a5a3b"
+    },
+    {
+      "id": "marcha",
+      "name": "Marcha",
+      "color": "#5e7d4f"
+    },
+    {
+      "id": "descanso",
+      "name": "Descanso",
+      "color": "#b5854e"
+    },
+    {
+      "id": "dormir",
+      "name": "Dormir",
+      "color": "#5c6fa8"
+    },
+    {
+      "id": "refugio",
+      "name": "Refugio",
+      "color": "#4e7d8e"
+    },
+    {
+      "id": "cocina",
+      "name": "Cocina",
+      "color": "#c99a3c"
+    },
+    {
+      "id": "fuego",
+      "name": "Fuego",
+      "color": "#b0413e"
+    },
+    {
+      "id": "combustible",
+      "name": "Combustible",
+      "color": "#7a5c8e"
+    },
+    {
+      "id": "herramientas",
+      "name": "Herramientas",
+      "color": "#55606b"
+    },
+    {
+      "id": "limpieza",
+      "name": "Limpieza",
+      "color": "#58a08a"
+    },
+    {
+      "id": "campamento",
+      "name": "Campamento",
+      "color": "#6e6a5e"
+    },
+    {
+      "id": "iluminacion",
+      "name": "Iluminación",
+      "color": "#c9b23a"
+    },
+    {
+      "id": "ropa",
+      "name": "Ropa",
+      "color": "#a86378"
+    },
+    {
+      "id": "electronica",
+      "name": "Electrónica",
+      "color": "#54708c"
+    }
+  ],
+  "items": [],
+  "groups": [],
+  "reviews": []
+}

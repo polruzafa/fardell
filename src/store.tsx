@@ -6,9 +6,8 @@ import {
   type Dispatch,
   type ReactNode,
 } from 'react'
-import seed from './data/gear.json'
+import starter from './data/starter.json'
 import { getLocale } from './i18n'
-import { EMPTY_BASE, mergeSeedData, stableStringify } from './seedMerge'
 
 export type Category = {
   id: string
@@ -42,6 +41,8 @@ export type GearItem = {
    * motxilla o el kit mostren un avís — mai no bloquegen res.
    */
   needs?: string[]
+  /** Entrada del catàleg d'on prové la fitxa, si es va crear des del catàleg. */
+  catalogId?: string
 }
 
 /** Un element dins d'un grup: la quantitat i el «a sobre» són del grup, no de l'element. */
@@ -112,11 +113,14 @@ export type GearData = {
 
 export const BACKPACK_CATEGORY = 'mochilas'
 
-const STORAGE_KEY = 'fardell:data'
-/** La llavor amb què es va fusionar per última vegada (vegeu seedMerge.ts). */
-const SEED_BASE_KEY = 'fardell:seed-base'
+/** La versió de l'esquema que escriu l'app (starter.json l'ha de dur igual). */
+export const SCHEMA_VERSION = 6
 
-export const seedData = seed as GearData
+const STORAGE_KEY = 'fardell:data'
+
+/** Les dades inicials: només la taxonomia de categories, sense cap element.
+ * Tot el material és de l'usuari: creat a mà o triat del catàleg. */
+export const starterData = starter as GearData
 
 export type Action =
   | { type: 'item/add'; item: GearItem }
@@ -263,7 +267,7 @@ function reducer(data: GearData, action: Action): GearData {
     case 'data/import':
       return action.data
     case 'data/reset':
-      return seedData
+      return starterData
   }
 }
 
@@ -277,10 +281,10 @@ function updateGroup(data: GearData, groupId: string, fn: (g: Group) => Group): 
 //  1. Afegir un camp OPCIONAL no requereix apujar schemaVersion: les dades
 //     desades segueixen sent vàlides tal qual.
 //  2. Si un canvi és incompatible (camp que canvia de forma, renom, unitats),
-//     apugeu schemaVersion a la llavor i afegiu un pas a migrate() que
+//     apugeu SCHEMA_VERSION (i starter.json) i afegiu un pas a migrate() que
 //     TRANSFORMI les dades de la versió anterior sense perdre res.
-//  3. Tornar a la llavor és només l'últim recurs per a dades corruptes o de
-//     versions desconegudes (més noves que l'app, per exemple).
+//  3. Tornar a l'inventari buit és només l'últim recurs per a dades corruptes
+//     o de versions desconegudes (més noves que l'app, per exemple).
 
 function looksLikeGearData(value: unknown): value is Record<string, unknown> {
   if (typeof value !== 'object' || value === null) return false
@@ -382,40 +386,23 @@ function migrate(raw: Record<string, unknown>): GearData {
 export function parseGearData(value: unknown): GearData | null {
   if (!looksLikeGearData(value)) return null
   const migrated = migrate(value)
-  return migrated.schemaVersion === seedData.schemaVersion ? migrated : null
+  return migrated.schemaVersion === SCHEMA_VERSION ? migrated : null
 }
 
-function loadSeedBase(): GearData | null {
-  try {
-    const raw = localStorage.getItem(SEED_BASE_KEY)
-    if (raw) return parseGearData(JSON.parse(raw) as unknown)
-  } catch {
-    // base corrupta: es tracta com si no n'hi hagués
-  }
-  return null
-}
-
+/** Les dades del dispositiu, tal qual: són de l'usuari i no es fusionen amb
+ * res (la fusió amb la llavor es va retirar el juliol del 2026, quan la
+ * llavor va deixar de dur material). Sense dades (o corruptes): les inicials. */
 function load(): GearData {
   try {
     const raw = localStorage.getItem(STORAGE_KEY)
     if (raw) {
       const parsed = parseGearData(JSON.parse(raw) as unknown)
-      if (parsed) {
-        const base = loadSeedBase()
-        if (stableStringify(base) === stableStringify(seedData)) return parsed
-        // La llavor ha canviat des de l'última fusió: s'hi incorporen les
-        // novetats sense perdre res de l'usuari. Sense base coneguda es fa
-        // servir la base buida, que conserva tot el que té l'usuari.
-        const merged = mergeSeedData(base ?? EMPTY_BASE, parsed, seedData)
-        localStorage.setItem(SEED_BASE_KEY, JSON.stringify(seedData))
-        return merged
-      }
+      if (parsed) return parsed
     }
   } catch {
-    // dades corruptes: es torna a les dades d'exemple
+    // dades corruptes: es comença amb les categories inicials
   }
-  localStorage.setItem(SEED_BASE_KEY, JSON.stringify(seedData))
-  return seedData
+  return starterData
 }
 
 const StoreContext = createContext<{ data: GearData; dispatch: Dispatch<Action> } | null>(null)

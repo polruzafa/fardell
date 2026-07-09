@@ -34,6 +34,17 @@ const ca = {
   'gear.all': 'Tot',
   'gear.emptyFiltered': 'No s’ha trobat cap element.',
   'gear.addFirst': 'Afegeix el primer element',
+  'gear.catalog': 'Catàleg',
+  'gear.browseCatalog': 'Tria del catàleg',
+
+  'catalog.title': 'Catàleg',
+  'catalog.hint':
+    'Trieu un element per personalitzar-ne la fitxa i desar-lo al vostre material.',
+  'catalog.searchPlaceholder': 'Cerca al catàleg…',
+  'catalog.searchLabel': 'Cerca al catàleg',
+  'catalog.empty': 'El catàleg encara és buit.',
+  'catalog.emptyFiltered': 'No s’ha trobat cap element al catàleg.',
+  'catalog.owned': 'ja el teniu',
 
   'item.missing': 'Aquest element ja no existeix.',
   'item.backToGear': 'Torna al material',
@@ -79,6 +90,7 @@ const ca = {
   'form.deprecatedHint': '(ja no es fa servir)',
   'form.deprecatedReason': 'Motiu',
   'form.deprecatedReasonPlaceholder': 'trencat, substituït pel nou…',
+  'form.noCategories': 'No hi ha cap categoria: creeu-ne una als Ajustos.',
   'group.incQty': 'Afegeix una unitat de «{name}»',
   'group.decQty': 'Treu una unitat de «{name}»',
 
@@ -180,7 +192,7 @@ const ca = {
   'settings.backup': 'Còpia de seguretat',
   'settings.danger': 'Zona perillosa',
   'settings.dangerHint':
-    'Descarta totes les dades d’aquest dispositiu i torna a les d’exemple. No es pot desfer.',
+    'Suprimeix tot el material d’aquest dispositiu i torna a les categories inicials. No es pot desfer.',
 
   'theme.pedra': 'Pedra',
   'theme.estandard': 'Estàndard',
@@ -232,14 +244,14 @@ const ca = {
     'Les dades es desen en aquest dispositiu, dins del navegador. Exporteu-les de tant en tant per tenir-ne una còpia, o per posar-les al repositori com a llavor.',
   'data.export': 'Exporta el JSON',
   'data.import': 'Importa un JSON',
-  'data.reset': 'Restaura les dades d’exemple',
+  'data.reset': 'Buida les dades',
   'data.importInvalid':
     'El fitxer no té el format esperat (calen «categories», «items» i «groups»).',
   'data.importConfirm':
     'Voleu substituir les dades actuals per les del fitxer? ({items} elements, {groups} grups)',
   'data.importError': 'No s’ha pogut llegir el fitxer JSON.',
   'data.resetConfirm':
-    'Voleu descartar totes les dades i tornar a les dades d’exemple? Aquesta acció no es pot desfer.',
+    'Voleu suprimir tots els elements, kits, motxilles i ressenyes d’aquest dispositiu? Només es conserven les categories inicials. Aquesta acció no es pot desfer.',
 
   'data.categories': 'Categories',
   'data.categoryName': 'Nom de la categoria',
@@ -289,6 +301,17 @@ const es: Record<TKey, string> = {
   'gear.all': 'Todo',
   'gear.emptyFiltered': 'No se ha encontrado ningún elemento.',
   'gear.addFirst': 'Añade el primer elemento',
+  'gear.catalog': 'Catálogo',
+  'gear.browseCatalog': 'Elige del catálogo',
+
+  'catalog.title': 'Catálogo',
+  'catalog.hint':
+    'Elige un elemento para personalizar su ficha y guardarlo en tu material.',
+  'catalog.searchPlaceholder': 'Busca en el catálogo…',
+  'catalog.searchLabel': 'Buscar en el catálogo',
+  'catalog.empty': 'El catálogo aún está vacío.',
+  'catalog.emptyFiltered': 'No se ha encontrado ningún elemento en el catálogo.',
+  'catalog.owned': 'ya lo tienes',
 
   'item.missing': 'Este elemento ya no existe.',
   'item.backToGear': 'Volver al material',
@@ -335,6 +358,7 @@ const es: Record<TKey, string> = {
   'form.deprecatedHint': '(ya no se usa)',
   'form.deprecatedReason': 'Motivo',
   'form.deprecatedReasonPlaceholder': 'roto, sustituido por el nuevo…',
+  'form.noCategories': 'No hay ninguna categoría: crea una en los Ajustes.',
   'group.incQty': 'Añadir una unidad de «{name}»',
   'group.decQty': 'Quitar una unidad de «{name}»',
 
@@ -436,7 +460,7 @@ const es: Record<TKey, string> = {
   'settings.backup': 'Copia de seguridad',
   'settings.danger': 'Zona peligrosa',
   'settings.dangerHint':
-    'Descarta todos los datos de este dispositivo y vuelve a los de ejemplo. No se puede deshacer.',
+    'Elimina todo el material de este dispositivo y vuelve a las categorías iniciales. No se puede deshacer.',
 
   'theme.pedra': 'Piedra',
   'theme.estandard': 'Estándar',
@@ -488,14 +512,14 @@ const es: Record<TKey, string> = {
     'Los datos se guardan en este dispositivo, dentro del navegador. Expórtalos de vez en cuando para tener una copia, o para ponerlos en el repositorio como semilla.',
   'data.export': 'Exportar el JSON',
   'data.import': 'Importar un JSON',
-  'data.reset': 'Restaurar los datos de ejemplo',
+  'data.reset': 'Vaciar los datos',
   'data.importInvalid':
     'El archivo no tiene el formato esperado (hacen falta «categories», «items» y «groups»).',
   'data.importConfirm':
     '¿Quieres sustituir los datos actuales por los del archivo? ({items} elementos, {groups} grupos)',
   'data.importError': 'No se ha podido leer el archivo JSON.',
   'data.resetConfirm':
-    '¿Quieres descartar todos los datos y volver a los datos de ejemplo? Esta acción no se puede deshacer.',
+    '¿Quieres eliminar todos los elementos, kits, mochilas y reseñas de este dispositivo? Solo se conservan las categorías iniciales. Esta acción no se puede deshacer.',
 
   'data.categories': 'Categorías',
   'data.categoryName': 'Nombre de la categoría',
@@ -543,6 +567,16 @@ const en: Record<TKey, string> = {
   'gear.all': 'All',
   'gear.emptyFiltered': 'No items found.',
   'gear.addFirst': 'Add the first item',
+  'gear.catalog': 'Catalogue',
+  'gear.browseCatalog': 'Pick from the catalogue',
+
+  'catalog.title': 'Catalogue',
+  'catalog.hint': 'Pick an item to customise its sheet and save it into your gear.',
+  'catalog.searchPlaceholder': 'Search the catalogue…',
+  'catalog.searchLabel': 'Search the catalogue',
+  'catalog.empty': 'The catalogue is still empty.',
+  'catalog.emptyFiltered': 'No catalogue entries found.',
+  'catalog.owned': 'already in your gear',
 
   'item.missing': 'This item no longer exists.',
   'item.backToGear': 'Back to gear',
@@ -588,6 +622,7 @@ const en: Record<TKey, string> = {
   'form.deprecatedHint': '(no longer in use)',
   'form.deprecatedReason': 'Reason',
   'form.deprecatedReasonPlaceholder': 'broken, replaced by the new one…',
+  'form.noCategories': 'There are no categories: create one in Settings.',
   'group.incQty': 'Add one unit of “{name}”',
   'group.decQty': 'Remove one unit of “{name}”',
 
@@ -689,7 +724,7 @@ const en: Record<TKey, string> = {
   'settings.backup': 'Backup',
   'settings.danger': 'Danger zone',
   'settings.dangerHint':
-    'Discards all the data on this device and returns to the sample data. It cannot be undone.',
+    'Deletes all the gear on this device and returns to the starter categories. It cannot be undone.',
 
   'theme.pedra': 'Stone',
   'theme.estandard': 'Standard',
@@ -741,14 +776,14 @@ const en: Record<TKey, string> = {
     'Data is stored on this device, inside the browser. Export it from time to time to keep a copy, or to put it in the repository as the seed.',
   'data.export': 'Export JSON',
   'data.import': 'Import JSON',
-  'data.reset': 'Restore sample data',
+  'data.reset': 'Clear all data',
   'data.importInvalid':
     'The file does not have the expected format (it needs “categories”, “items” and “groups”).',
   'data.importConfirm':
     'Replace the current data with the file’s? ({items} items, {groups} groups)',
   'data.importError': 'Could not read the JSON file.',
   'data.resetConfirm':
-    'Discard all data and go back to the sample data? This action cannot be undone.',
+    'Delete every item, kit, pack and review on this device? Only the starter categories are kept. This action cannot be undone.',
 
   'data.categories': 'Categories',
   'data.categoryName': 'Category name',

@@ -1,33 +1,62 @@
 import { useState, type FormEvent } from 'react'
-import { Link, useNavigate, useParams } from 'react-router-dom'
+import { Link, useLocation, useNavigate, useParams } from 'react-router-dom'
+import { findCategoryFor, type ItemPrefill } from '../catalog'
 import { useI18n } from '../i18n'
-import { BACKPACK_CATEGORY, itemOf, newId, useStore } from '../store'
+import { pickCategoryColor } from '../itemsImport'
+import { BACKPACK_CATEGORY, itemOf, newId, useStore, type Category } from '../store'
 
 export default function ItemForm() {
   const { id } = useParams()
   const { data, dispatch } = useStore()
   const { t } = useI18n()
   const navigate = useNavigate()
+  const location = useLocation()
 
   const existing = id ? itemOf(data, id) : undefined
   const editing = Boolean(existing)
 
-  const [name, setName] = useState(existing?.name ?? '')
-  const [categoryId, setCategoryId] = useState(existing?.categoryId ?? data.categories[0]?.id ?? '')
-  const [weight, setWeight] = useState(existing?.weightGrams?.toString() ?? '')
-  const [caseWeight, setCaseWeight] = useState(existing?.caseWeightGrams?.toString() ?? '')
-  const [placement, setPlacement] = useState(existing?.placement ?? '')
-  const [maxLoad, setMaxLoad] = useState(
-    existing?.maxLoadGrams != null ? (existing.maxLoadGrams / 1000).toString() : '',
+  // Fitxa preomplerta des del catàleg (només en mode nou). Viu a l'estat de
+  // navegació: si es recarrega la pàgina, es perd i es torna a triar.
+  const prefill = !id ? (location.state as { prefill?: ItemPrefill } | null)?.prefill : undefined
+  const matched = prefill ? findCategoryFor(data.categories, prefill) : undefined
+  // Si l'usuari no té la categoria de l'entrada triada, se'n prepara una que
+  // només es crearà en desar (cancel·lar no deixa cap rastre).
+  const [pendingCategory] = useState<Category | null>(() => {
+    if (!prefill || matched) return null
+    return {
+      id: prefill.categoryId,
+      name: prefill.categoryName,
+      color: pickCategoryColor(new Set(data.categories.map((c) => c.color)), prefill.categoryName),
+    }
+  })
+
+  const [name, setName] = useState(existing?.name ?? prefill?.name ?? '')
+  const [categoryId, setCategoryId] = useState(
+    existing?.categoryId ?? matched?.id ?? prefill?.categoryId ?? data.categories[0]?.id ?? '',
   )
-  const [tags, setTags] = useState(existing?.tags.join(', ') ?? '')
+  const [weight, setWeight] = useState(
+    existing?.weightGrams?.toString() ?? prefill?.weightGrams?.toString() ?? '',
+  )
+  const [caseWeight, setCaseWeight] = useState(
+    existing?.caseWeightGrams?.toString() ?? prefill?.caseWeightGrams?.toString() ?? '',
+  )
+  const [placement, setPlacement] = useState(existing?.placement ?? '')
+  const initialMaxLoad = existing?.maxLoadGrams ?? prefill?.maxLoadGrams
+  const [maxLoad, setMaxLoad] = useState(
+    initialMaxLoad != null ? (initialMaxLoad / 1000).toString() : '',
+  )
+  const [tags, setTags] = useState(existing?.tags.join(', ') ?? prefill?.tags?.join(', ') ?? '')
   const [needs, setNeeds] = useState(existing?.needs?.join(', ') ?? '')
-  const [notes, setNotes] = useState(existing?.notes ?? '')
+  const [notes, setNotes] = useState(existing?.notes ?? prefill?.notes ?? '')
   const [specs, setSpecs] = useState<{ label: string; value: string }[]>(
-    existing?.specs?.map((s) => ({ ...s })) ?? [],
+    (existing?.specs ?? prefill?.specs)?.map((s) => ({ ...s })) ?? [],
   )
   const [deprecated, setDeprecated] = useState(existing?.deprecated ?? false)
   const [deprecatedReason, setDeprecatedReason] = useState(existing?.deprecatedReason ?? '')
+
+  // Sense categories (inventari acabat d'estrenar i taxonomia esborrada) no
+  // es pot desar cap element: es demana crear-ne una als Ajustos.
+  const noCategories = data.categories.length === 0 && !pendingCategory
 
   function setSpec(index: number, field: 'label' | 'value', text: string) {
     setSpecs(specs.map((s, i) => (i === index ? { ...s, [field]: text } : s)))
@@ -47,7 +76,7 @@ export default function ItemForm() {
   function save(e: FormEvent) {
     e.preventDefault()
     const trimmed = name.trim()
-    if (!trimmed) return
+    if (!trimmed || !categoryId) return
     const cleanNeeds = needs
       .split(',')
       .map((need) => need.trim())
@@ -77,8 +106,15 @@ export default function ItemForm() {
       deprecatedReason: deprecated ? deprecatedReason.trim() || undefined : undefined,
       notes: notes.trim(),
       photo: existing?.photo ?? null,
+      catalogId: existing?.catalogId ?? prefill?.catalogId,
     }
-    dispatch({ type: editing ? 'item/update' : 'item/add', item })
+    if (!editing && pendingCategory && categoryId === pendingCategory.id) {
+      // La categoria de l'entrada triada no existia: es crea amb l'element,
+      // atòmicament.
+      dispatch({ type: 'items/addMany', items: [item], categories: [pendingCategory] })
+    } else {
+      dispatch({ type: editing ? 'item/update' : 'item/add', item })
+    }
     navigate(`/element/${item.id}`, { replace: true })
   }
 
@@ -101,16 +137,23 @@ export default function ItemForm() {
           />
         </label>
 
-        <label>
-          {t('item.category')}
-          <select value={categoryId} onChange={(e) => setCategoryId(e.target.value)}>
-            {data.categories.map((c) => (
-              <option key={c.id} value={c.id}>
-                {c.name}
-              </option>
-            ))}
-          </select>
-        </label>
+        {noCategories ? (
+          <p className="hint">{t('form.noCategories')}</p>
+        ) : (
+          <label>
+            {t('item.category')}
+            <select value={categoryId} onChange={(e) => setCategoryId(e.target.value)}>
+              {pendingCategory && (
+                <option value={pendingCategory.id}>{pendingCategory.name}</option>
+              )}
+              {data.categories.map((c) => (
+                <option key={c.id} value={c.id}>
+                  {c.name}
+                </option>
+              ))}
+            </select>
+          </label>
+        )}
 
         <label>
           {t('form.weight')}
@@ -239,7 +282,7 @@ export default function ItemForm() {
         )}
 
         <div className="actions">
-          <button type="submit" className="btn btn-primary">
+          <button type="submit" className="btn btn-primary" disabled={!categoryId}>
             {t('common.save')}
           </button>
           <Link to={editing ? `/element/${id}` : '/'} className="btn">
