@@ -9,7 +9,7 @@ export const LANGS: { code: Lang; label: string }[] = [
 ]
 
 const LOCALES: Record<Lang, string> = { ca: 'ca-ES', es: 'es-ES', en: 'en-GB' }
-const STORAGE_KEY = 'for-gear:lang'
+const STORAGE_KEY = 'fardell:lang'
 const DEFAULT_LANG: Lang = 'ca'
 
 const ca = {
@@ -174,7 +174,51 @@ const ca = {
 
   'settings.title': 'Ajustos',
   'settings.language': 'Llengua',
+  'settings.theme': 'Tema',
+  'settings.scheme': 'Clar o fosc',
   'settings.version': 'Versió',
+  'settings.account': 'Compte',
+
+  'theme.pedra': 'Pedra',
+  'theme.estandard': 'Estàndard',
+  'theme.mediterrania': 'Mediterrània',
+  'theme.highperformance': 'High Performance',
+  'theme.minimalista': 'Minimalista Clean',
+  'scheme.system': 'Sistema',
+  'scheme.light': 'Clar',
+  'scheme.dark': 'Fosc',
+
+  'account.hint':
+    'Amb un compte, les dades es guarden també al servidor i se sincronitzen entre dispositius. Les fotografies no viatgen: es queden a cada dispositiu.',
+  'account.server': 'Servidor',
+  'account.serverHint': '(l’URL de l’API; vegeu server/README.md)',
+  'account.serverPlaceholder': 'https://fardell-api.exemple.workers.dev',
+  'account.email': 'Adreça electrònica',
+  'account.password': 'Contrasenya',
+  'account.passwordHint': '(mínim 8 caràcters)',
+  'account.login': 'Inicia la sessió',
+  'account.register': 'Crea el compte',
+  'account.logout': 'Tanca la sessió',
+  'account.delete': 'Suprimeix el compte',
+  'account.deleteConfirm':
+    'Voleu suprimir el compte i la còpia del servidor? Les dades d’aquest dispositiu es conserven.',
+  'account.deletePassword': 'Escriviu la contrasenya per confirmar-ho:',
+  'account.syncNow': 'Sincronitza ara',
+  'account.lastSync': 'Última sincronització',
+  'account.never': 'mai',
+  'account.statusSyncing': 'S’està sincronitzant…',
+  'account.statusSynced': 'Sincronitzat',
+  'account.statusDirty': 'Canvis pendents d’enviar',
+  'account.conflict':
+    'Hi ha canvis en aquest dispositiu i també al servidor. Voleu quedar-vos amb la versió del SERVIDOR? («D’acord»: la del servidor; «Cancel·la»: la d’aquest dispositiu, que s’enviarà al servidor.)',
+  'account.errServer': 'Cal l’URL del servidor.',
+  'account.errEmail': 'L’adreça electrònica no sembla vàlida.',
+  'account.errPassword': 'La contrasenya ha de tenir 8 caràcters com a mínim.',
+  'account.errExists': 'Ja hi ha un compte amb aquesta adreça.',
+  'account.errCredentials': 'L’adreça o la contrasenya no són correctes.',
+  'account.errNetwork': 'No s’ha pogut contactar amb el servidor.',
+  'account.errSession': 'La sessió ha caducat; torneu a iniciar-la.',
+  'account.errIncompatible': 'Les dades del servidor són d’una versió més nova de l’app.',
 
   'data.items': 'Elements',
   'data.kits': 'Kits',
@@ -383,7 +427,51 @@ const es: Record<TKey, string> = {
 
   'settings.title': 'Ajustes',
   'settings.language': 'Idioma',
+  'settings.theme': 'Tema',
+  'settings.scheme': 'Claro u oscuro',
   'settings.version': 'Versión',
+  'settings.account': 'Cuenta',
+
+  'theme.pedra': 'Piedra',
+  'theme.estandard': 'Estándar',
+  'theme.mediterrania': 'Mediterránea',
+  'theme.highperformance': 'High Performance',
+  'theme.minimalista': 'Minimalista Clean',
+  'scheme.system': 'Sistema',
+  'scheme.light': 'Claro',
+  'scheme.dark': 'Oscuro',
+
+  'account.hint':
+    'Con una cuenta, los datos se guardan también en el servidor y se sincronizan entre dispositivos. Las fotografías no viajan: se quedan en cada dispositivo.',
+  'account.server': 'Servidor',
+  'account.serverHint': '(la URL de la API; ver server/README.md)',
+  'account.serverPlaceholder': 'https://fardell-api.ejemplo.workers.dev',
+  'account.email': 'Correo electrónico',
+  'account.password': 'Contraseña',
+  'account.passwordHint': '(mínimo 8 caracteres)',
+  'account.login': 'Iniciar sesión',
+  'account.register': 'Crear la cuenta',
+  'account.logout': 'Cerrar la sesión',
+  'account.delete': 'Eliminar la cuenta',
+  'account.deleteConfirm':
+    '¿Quieres eliminar la cuenta y la copia del servidor? Los datos de este dispositivo se conservan.',
+  'account.deletePassword': 'Escribe la contraseña para confirmarlo:',
+  'account.syncNow': 'Sincronizar ahora',
+  'account.lastSync': 'Última sincronización',
+  'account.never': 'nunca',
+  'account.statusSyncing': 'Sincronizando…',
+  'account.statusSynced': 'Sincronizado',
+  'account.statusDirty': 'Cambios pendientes de enviar',
+  'account.conflict':
+    'Hay cambios en este dispositivo y también en el servidor. ¿Quieres quedarte con la versión del SERVIDOR? («Aceptar»: la del servidor; «Cancelar»: la de este dispositivo, que se enviará al servidor.)',
+  'account.errServer': 'Hace falta la URL del servidor.',
+  'account.errEmail': 'El correo electrónico no parece válido.',
+  'account.errPassword': 'La contraseña debe tener al menos 8 caracteres.',
+  'account.errExists': 'Ya hay una cuenta con esta dirección.',
+  'account.errCredentials': 'El correo o la contraseña no son correctos.',
+  'account.errNetwork': 'No se ha podido contactar con el servidor.',
+  'account.errSession': 'La sesión ha caducado; vuelve a iniciarla.',
+  'account.errIncompatible': 'Los datos del servidor son de una versión más nueva de la app.',
 
   'data.items': 'Elementos',
   'data.kits': 'Kits',
@@ -589,7 +677,51 @@ const en: Record<TKey, string> = {
 
   'settings.title': 'Settings',
   'settings.language': 'Language',
+  'settings.theme': 'Theme',
+  'settings.scheme': 'Light or dark',
   'settings.version': 'Version',
+  'settings.account': 'Account',
+
+  'theme.pedra': 'Stone',
+  'theme.estandard': 'Standard',
+  'theme.mediterrania': 'Mediterranean',
+  'theme.highperformance': 'High Performance',
+  'theme.minimalista': 'Minimalista Clean',
+  'scheme.system': 'System',
+  'scheme.light': 'Light',
+  'scheme.dark': 'Dark',
+
+  'account.hint':
+    'With an account, your data is also stored on the server and synced across devices. Photos don’t travel: they stay on each device.',
+  'account.server': 'Server',
+  'account.serverHint': '(the API URL; see server/README.md)',
+  'account.serverPlaceholder': 'https://fardell-api.example.workers.dev',
+  'account.email': 'Email',
+  'account.password': 'Password',
+  'account.passwordHint': '(at least 8 characters)',
+  'account.login': 'Log in',
+  'account.register': 'Create account',
+  'account.logout': 'Log out',
+  'account.delete': 'Delete account',
+  'account.deleteConfirm':
+    'Delete the account and the server copy? The data on this device is kept.',
+  'account.deletePassword': 'Type your password to confirm:',
+  'account.syncNow': 'Sync now',
+  'account.lastSync': 'Last sync',
+  'account.never': 'never',
+  'account.statusSyncing': 'Syncing…',
+  'account.statusSynced': 'Synced',
+  'account.statusDirty': 'Changes waiting to be sent',
+  'account.conflict':
+    'There are changes on this device and also on the server. Keep the SERVER version? (“OK”: the server’s; “Cancel”: this device’s, which will be sent to the server.)',
+  'account.errServer': 'The server URL is required.',
+  'account.errEmail': 'That email address doesn’t look valid.',
+  'account.errPassword': 'The password must be at least 8 characters long.',
+  'account.errExists': 'There is already an account with this address.',
+  'account.errCredentials': 'Wrong email or password.',
+  'account.errNetwork': 'Could not reach the server.',
+  'account.errSession': 'The session has expired; please log in again.',
+  'account.errIncompatible': 'The server data comes from a newer version of the app.',
 
   'data.items': 'Items',
   'data.kits': 'Kits',

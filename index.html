@@ -6,7 +6,34 @@
     <meta name="theme-color" content="#1f261e" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
-    <title>For Gear</title>
+    <title>Fardell</title>
+    <script>
+      // Aplica el tema i el clar/fosc desats ABANS de la primera pintada,
+      // perquè no hi hagi cap llampec del tema per defecte mentre carrega
+      // React (vegeu src/theme.tsx, que en pren el relleu).
+      ;(function () {
+        try {
+          var d = document.documentElement
+          // El recurs a les claus antigues (for-gear:*) cobreix la primera
+          // arrencada després del canvi de nom, abans que migrateStorage.ts
+          // les hagi mogut.
+          d.dataset.theme =
+            localStorage.getItem('fardell:theme') ||
+            localStorage.getItem('for-gear:theme') ||
+            'pedra'
+          var mode =
+            localStorage.getItem('fardell:scheme') || localStorage.getItem('for-gear:scheme')
+          d.dataset.scheme =
+            mode === 'light' || mode === 'dark'
+              ? mode
+              : matchMedia('(prefers-color-scheme: dark)').matches
+                ? 'dark'
+                : 'light'
+        } catch (e) {
+          /* sense localStorage (mode privat antic): es queda el tema per defecte */
+        }
+      })()
+    </script>
   </head>
   <body>
     <div id="root"></div>

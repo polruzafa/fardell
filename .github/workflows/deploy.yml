@@ -31,6 +31,9 @@ jobs:
           cache-dependency-path: pnpm-lock.yaml
       - run: pnpm install --frozen-lockfile
       - run: pnpm build
+        env:
+          # Preomple el camp «Servidor» dels Ajustos amb l'API desplegada
+          VITE_API_URL: https://fardell-api.pruzafaaige.workers.dev
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist

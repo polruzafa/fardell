@@ -1,6 +1,8 @@
 import { HashRouter, Link, Navigate, NavLink, Outlet, Route, Routes } from 'react-router-dom'
+import { AccountProvider } from './account'
 import { I18nProvider, useI18n } from './i18n'
 import { StoreProvider } from './store'
+import { ThemeProvider } from './theme'
 import GearList from './pages/GearList'
 import GroupDetail from './pages/GroupDetail'
 import ItemDetail from './pages/ItemDetail'
@@ -18,7 +20,7 @@ function Layout() {
     <div className="app">
       <header className="topbar">
         <span className="wordmark">
-          For<span className="wordmark-dot">·</span>Gear
+          Far<span className="wordmark-dot">·</span>dell
         </span>
         <Link to="/ajustos" className="settings-link" aria-label={t('settings.title')}>
           <svg viewBox="0 0 24 24" aria-hidden="true" className="settings-icon">
@@ -78,29 +80,33 @@ function TabIcon({ kind }: { kind: 'gear' | 'kit' | 'pack' | 'review' | 'data' }
 
 export default function App() {
   return (
-    <I18nProvider>
-      <StoreProvider>
-        <HashRouter>
-          <Routes>
-            <Route element={<Layout />}>
-              <Route index element={<GearList />} />
-              <Route path="element/nou" element={<ItemForm />} />
-              <Route path="element/:id" element={<ItemDetail />} />
-              <Route path="element/:id/edita" element={<ItemForm />} />
-              <Route path="kits" element={<KitsPage />} />
-              <Route path="kits/:id" element={<GroupDetail />} />
-              <Route path="motxilles" element={<Packs />} />
-              <Route path="motxilles/:id" element={<GroupDetail />} />
-              <Route path="receptes" element={<ReviewsPage />} />
-              <Route path="receptes/nova" element={<ReviewForm />} />
-              <Route path="receptes/:id" element={<ReviewForm />} />
-              <Route path="dades" element={<DataPage />} />
-              <Route path="ajustos" element={<SettingsPage />} />
-              <Route path="*" element={<Navigate to="/" replace />} />
-            </Route>
-          </Routes>
-        </HashRouter>
-      </StoreProvider>
-    </I18nProvider>
+    <ThemeProvider>
+      <I18nProvider>
+        <StoreProvider>
+          <AccountProvider>
+            <HashRouter>
+              <Routes>
+                <Route element={<Layout />}>
+                  <Route index element={<GearList />} />
+                  <Route path="element/nou" element={<ItemForm />} />
+                  <Route path="element/:id" element={<ItemDetail />} />
+                  <Route path="element/:id/edita" element={<ItemForm />} />
+                  <Route path="kits" element={<KitsPage />} />
+                  <Route path="kits/:id" element={<GroupDetail />} />
+                  <Route path="motxilles" element={<Packs />} />
+                  <Route path="motxilles/:id" element={<GroupDetail />} />
+                  <Route path="receptes" element={<ReviewsPage />} />
+                  <Route path="receptes/nova" element={<ReviewForm />} />
+                  <Route path="receptes/:id" element={<ReviewForm />} />
+                  <Route path="dades" element={<DataPage />} />
+                  <Route path="ajustos" element={<SettingsPage />} />
+                  <Route path="*" element={<Navigate to="/" replace />} />
+                </Route>
+              </Routes>
+            </HashRouter>
+          </AccountProvider>
+        </StoreProvider>
+      </I18nProvider>
+    </ThemeProvider>
   )
 }

@@ -3,7 +3,7 @@
 // viatgen amb l'exportació del JSON ni es sincronitzen entre dispositius.
 import { useEffect, useState } from 'react'
 
-const DB_NAME = 'for-gear'
+const DB_NAME = 'fardell'
 const STORE = 'photos'
 
 function openDb(): Promise<IDBDatabase> {

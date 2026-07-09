@@ -112,9 +112,9 @@ export type GearData = {
 
 export const BACKPACK_CATEGORY = 'mochilas'
 
-const STORAGE_KEY = 'for-gear:data'
+const STORAGE_KEY = 'fardell:data'
 /** La llavor amb què es va fusionar per última vegada (vegeu seedMerge.ts). */
-const SEED_BASE_KEY = 'for-gear:seed-base'
+const SEED_BASE_KEY = 'fardell:seed-base'
 
 export const seedData = seed as GearData
 

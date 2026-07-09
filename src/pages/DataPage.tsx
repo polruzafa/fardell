@@ -75,7 +75,7 @@ export default function DataPage() {
     const url = URL.createObjectURL(blob)
     const a = document.createElement('a')
     a.href = url
-    a.download = `for-gear-${stamp}.json`
+    a.download = `fardell-${stamp}.json`
     a.click()
     URL.revokeObjectURL(url)
   }

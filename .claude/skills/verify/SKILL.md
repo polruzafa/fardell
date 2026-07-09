@@ -1,9 +1,9 @@
 ---
 name: verify
-description: Build, serve and drive For·Gear headlessly to verify changes at the real UI surface.
+description: Build, serve and drive Fardell headlessly to verify changes at the real UI surface.
 ---
 
-# Verificar For·Gear
+# Verificar Fardell
 
 App React + Vite (PWA, HashRouter, dades a localStorage). No hi ha tests: es verifica fent servir l'app de debò.
 
@@ -28,7 +28,7 @@ Instal·leu `puppeteer-core` en un directori temporal i lliureu-li aquest
 `executablePath`. Detalls que estalvien temps:
 
 - **Estat inicial**: visiteu la pàgina un cop, ompliu `localStorage`
-  (`for-gear:data` i `for-gear:seed-base`) amb `page.evaluate`, i recarregueu.
+  (`fardell:data` i `fardell:seed-base`) amb `page.evaluate`, i recarregueu.
   Per provar migracions, deseu-hi dades velles (p. ex. sense un camp nou).
 - **Confirmacions**: l'app fa servir `window.confirm`; caleu
   `page.on('dialog', d => d.accept())` abans de tocar res.
@@ -40,5 +40,5 @@ Instal·leu `puppeteer-core` en un directori temporal i lliureu-li aquest
 
 - Migració: dades velles a localStorage → l'app arrenca i completa camps nous.
 - Alta/edició/supressió des de la interfície (formularis, confirmacions).
-- Persistència: recarregueu i comproveu `localStorage['for-gear:data']`.
+- Persistència: recarregueu i comproveu `localStorage['fardell:data']`.
 - Referències creuades: suprimir un element/kit no ha de perdre res que hi apunti.

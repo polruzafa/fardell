@@ -1,4 +1,4 @@
-/* ── For Gear · full d'equipament ──────────────────────────────────────────
+/* ── Fardell · full d'equipament ──────────────────────────────────────────
    Paleta «pedra i taronja de seguretat»: fons de boira freda, tinta d'avet
    i un únic accent taronja, com el material de muntanya de veritat. */
 
@@ -22,20 +22,143 @@
   --radius: 10px;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --paper: #171c16;
-    --card: #212821;
-    --ink: #e9ece3;
-    --ink-soft: #9aa393;
-    --line: #333b31;
-    --accent: #f2622a;
-    --accent-ink: #fff8f3;
-    --danger: #d16663;
-    --warn: #d8b25e;
-    --warn-bg: rgba(201, 154, 60, 0.14);
-    --ok: #86a874;
-  }
+/* La variant fosca no depèn directament del sistema: src/theme.tsx (i
+   l'script inicial d'index.html) resolen sistema/clar/fosc i escriuen
+   data-scheme a <html>. */
+:root[data-scheme='dark'] {
+  --paper: #171c16;
+  --card: #212821;
+  --ink: #e9ece3;
+  --ink-soft: #9aa393;
+  --line: #333b31;
+  --accent: #f2622a;
+  --accent-ink: #fff8f3;
+  --danger: #d16663;
+  --warn: #d8b25e;
+  --warn-bg: rgba(201, 154, 60, 0.14);
+  --ok: #86a874;
+}
+
+/* ── Temes ──────────────────────────────────────────────────────────────────
+   Paletes portades de l'app bitácora (constants/Colors.ts); «pedra», la de
+   sempre, és el :root de dalt. Cada tema té variant clara i fosca. Els colors
+   que aquí fan de TEXT (warn, ok, danger) s'enfosqueixen o aclareixen
+   respecte de l'original quan cal contrast. */
+
+/* Estàndard: els blaus de sistema d'iOS. */
+:root[data-theme='estandard'] {
+  --paper: #ffffff;
+  --card: #f4f4f6;
+  --ink: #1c1c1e;
+  --ink-soft: #6d6d72;
+  --line: #d9d9de;
+  --accent: #007aff;
+  --accent-ink: #ffffff;
+  --danger: #d70015;
+  --warn: #a05a00;
+  --warn-bg: rgba(255, 149, 0, 0.12);
+  --ok: #248a3d;
+}
+
+:root[data-scheme='dark'][data-theme='estandard'] {
+  --paper: #000000;
+  --card: #1c1c1e;
+  --ink: #ffffff;
+  --ink-soft: #98989e;
+  --line: #38383a;
+  --accent: #0a84ff;
+  --accent-ink: #ffffff;
+  --danger: #ff453a;
+  --warn: #ff9f0a;
+  --warn-bg: rgba(255, 159, 10, 0.12);
+  --ok: #30d158;
+}
+
+/* Mediterrània: paper càlid, verd d'oliva i taronja. */
+:root[data-theme='mediterrania'] {
+  --paper: #f4f1ea;
+  --card: #fbf9f4;
+  --ink: #1e1e1e;
+  --ink-soft: #6b6b6b;
+  --line: #ddd6c8;
+  --accent: #2f5d50;
+  --accent-ink: #f2efe8;
+  --danger: #c0392b;
+  --warn: #b05e14;
+  --warn-bg: rgba(230, 126, 34, 0.12);
+  --ok: #4d7a52;
+}
+
+:root[data-scheme='dark'][data-theme='mediterrania'] {
+  --paper: #1f1d17;
+  --card: #2a2823;
+  --ink: #f0ede5;
+  --ink-soft: #b0ab9f;
+  --line: #3d3a32;
+  --accent: #7bae7f;
+  --accent-ink: #1c2a1e;
+  --danger: #e06060;
+  --warn: #e89b5a;
+  --warn-bg: rgba(232, 155, 90, 0.15);
+  --ok: #7bae7f;
+}
+
+/* High Performance: gris neutre, verd atzavara i groc. */
+:root[data-theme='highperformance'] {
+  --paper: #f8f8f8;
+  --card: #ffffff;
+  --ink: #111111;
+  --ink-soft: #6f6f6f;
+  --line: #e0e0e0;
+  --accent: #0e7c66;
+  --accent-ink: #f2fbf8;
+  --danger: #cf3a2b;
+  --warn: #8f7412;
+  --warn-bg: rgba(244, 196, 48, 0.15);
+  --ok: #1e8a4c;
+}
+
+:root[data-scheme='dark'][data-theme='highperformance'] {
+  --paper: #0f1614;
+  --card: #1a2220;
+  --ink: #f0f0f0;
+  --ink-soft: #909090;
+  --line: #2c3532;
+  --accent: #1fa38c;
+  --accent-ink: #0a1512;
+  --danger: #e74c3c;
+  --warn: #f4c430;
+  --warn-bg: rgba(244, 196, 48, 0.15);
+  --ok: #2fb36f;
+}
+
+/* Minimalista Clean: blanc, verd de bosc profund i vermell. */
+:root[data-theme='minimalista'] {
+  --paper: #ffffff;
+  --card: #faf8f2;
+  --ink: #1f3d2b;
+  --ink-soft: #7a8a7f;
+  --line: #e9e4d8;
+  --accent: #1f3d2b;
+  --accent-ink: #f4f1e8;
+  --danger: #c94c4c;
+  --warn: #a37b1e;
+  --warn-bg: rgba(212, 168, 71, 0.14);
+  --ok: #2e7d52;
+}
+
+:root[data-scheme='dark'][data-theme='minimalista'] {
+  --paper: #1a2820;
+  --card: #243027;
+  --ink: #e9e4d8;
+  --ink-soft: #a0a095;
+  --line: #37453c;
+  --accent: #8fb297;
+  --accent-ink: #14231a;
+  --danger: #e06969;
+  --warn: #e8c57f;
+  --warn-bg: rgba(232, 197, 127, 0.14);
+  --ok: #8fb297;
 }
 
 * {
@@ -308,6 +431,12 @@ h2 {
   border-radius: 3px;
   flex-shrink: 0;
   margin-right: 2px;
+}
+
+/* Mostres de color dins de xips (el selector de tema): un filet perquè les
+   mostres fosques es vegin sobre fons fosc. */
+.chip .dot {
+  box-shadow: inset 0 0 0 1px rgba(128, 128, 128, 0.45);
 }
 
 /* ── Llistes d'elements ── */
@@ -822,6 +951,8 @@ h2 {
   flex-wrap: wrap;
   align-items: center;
   gap: 6px;
+  min-width: 0;
+  overflow-wrap: anywhere; /* adreces electròniques llargues, etc. */
 }
 
 .tag {
@@ -1203,6 +1334,40 @@ h2 {
 
 .picker {
   margin-bottom: 16px;
+}
+
+/* ── Compte i sincronització ── */
+
+.sync-status {
+  margin: 10px 0;
+  font-family: var(--font-display);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.8rem;
+  color: var(--ink-soft);
+}
+
+.sync-status::before {
+  content: '';
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-right: 7px;
+  vertical-align: 1px;
+  background: currentColor;
+}
+
+.sync-status-ok {
+  color: var(--ok);
+}
+
+.sync-status-busy {
+  color: var(--warn);
+}
+
+.sync-status-error {
+  color: var(--danger);
 }
 
 :focus-visible {

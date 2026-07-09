@@ -38,8 +38,8 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.svg', 'icons/apple-touch-icon.png'],
       manifest: {
-        name: 'For Gear',
-        short_name: 'For Gear',
+        name: 'Fardell',
+        short_name: 'Fardell',
         description: 'Inventari de material de muntanya i preparació de motxilles',
         lang: 'ca',
         display: 'standalone',
