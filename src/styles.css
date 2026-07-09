@@ -239,16 +239,15 @@ body {
   height: 22px;
 }
 
+/* Logotip: condensat, fi i ben espaiat, com un full de mapa. */
 .wordmark {
   font-family: var(--font-display);
-  font-weight: 700;
+  font-weight: 600;
   font-size: 1.35rem;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.24em;
   text-transform: uppercase;
-}
-
-.wordmark-dot {
-  color: var(--accent);
+  /* L'espaiat afegeix un buit a la dreta de l'última lletra: es compensa. */
+  margin-right: -0.24em;
 }
 
 .content {

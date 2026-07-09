@@ -19,9 +19,7 @@ function Layout() {
   return (
     <div className="app">
       <header className="topbar">
-        <span className="wordmark">
-          Far<span className="wordmark-dot">·</span>dell
-        </span>
+        <span className="wordmark">Fardell</span>
         <Link to="/ajustos" className="settings-link" aria-label={t('settings.title')}>
           <svg viewBox="0 0 24 24" aria-hidden="true" className="settings-icon">
             <path

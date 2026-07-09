@@ -12,7 +12,7 @@ Sober equipment sheet. Technical, calm, utilitarian — like a well-made gear ch
 
 ### Aesthetic Direction
 
-- **«Pedra» is the identity**: cold-fog paper, fir-green ink, a single safety-orange accent (`--accent`), condensed display type (Avenir Next Condensed stack) for headings/wordmark, system font for body, tabular monospace for every number and weight. Design decisions optimize for Pedra in both light and dark; the other four themes (ports from the bitácora app) only need to remain usable — never let them dilute a design decision.
+- **«Pedra» is the identity**: cold-fog paper, fir-green ink, a single safety-orange accent (`--accent`), condensed display type (Avenir Next Condensed stack) for headings and the wordmark, system font for body, tabular monospace for every number and weight. The wordmark is `FARDELL` set airy and light (wide letter-spacing, no decorative mark); the orange lives in the app UI and the icon, not in the word. Design decisions optimize for Pedra in both light and dark; the other four themes (ports from the bitácora app) only need to remain usable — never let them dilute a design decision.
 - Everything themes through the CSS variables in `src/styles.css` (`--paper`, `--card`, `--ink`, `--accent`, …). Never hardcode colors in components; a change must hold up in Pedra light and dark at minimum.
 - Anti-reference: generic SaaS dashboards, playful/rounded consumer apps, anything that reads as a template.
 
