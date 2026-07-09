@@ -101,6 +101,13 @@ export default function ItemDetail() {
 
       <h1 className="detail-name">{item.name}</h1>
 
+      {item.deprecated && (
+        <div className="needs-warn" role="note">
+          <p className="needs-warn-title">{t('item.deprecated')}</p>
+          {item.deprecatedReason && <p className="deprecated-reason">{item.deprecatedReason}</p>}
+        </div>
+      )}
+
       <dl className="facts">
         <div>
           <dt>{t('item.category')}</dt>

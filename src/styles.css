@@ -396,6 +396,16 @@ h2 {
   opacity: 0.6;
 }
 
+/* Element retirat: la fitxa hi és, però ja no es fa servir */
+.row-name-deprecated {
+  text-decoration: line-through;
+  opacity: 0.6;
+}
+
+.deprecated-reason {
+  margin: 0;
+}
+
 .row-plus,
 .row-remove {
   flex-shrink: 0;
@@ -866,6 +876,191 @@ h2 {
 
 .form textarea {
   resize: vertical;
+}
+
+/* Casella amb el text al costat (p. ex. «Retirat») */
+.form .check-row {
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+}
+
+.form .check-row input[type='checkbox'] {
+  width: 18px;
+  height: 18px;
+  padding: 0;
+  margin: 0;
+  accent-color: var(--accent);
+}
+
+/* ── Ressenyes de plats i receptes ── */
+
+.stars {
+  display: inline-flex;
+  gap: 2px;
+  font-size: 1rem;
+  line-height: 1;
+  color: var(--line);
+  flex-shrink: 0;
+}
+
+.star-on {
+  color: var(--accent);
+}
+
+.stars-pick {
+  gap: 8px;
+}
+
+.stars-sm {
+  font-size: 0.8rem;
+  gap: 1px;
+}
+
+/* El material emprat, ben visible: el material és el rei */
+.review-gear {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0 0 10px;
+}
+
+.review-gear .tag {
+  display: inline-flex;
+  align-items: center;
+}
+
+/* Punt ratllat dels kits, com la barra de les seves files */
+.dot-kit {
+  background: repeating-linear-gradient(180deg, var(--accent) 0 2px, transparent 2px 4px);
+}
+
+.review-subratings {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+  margin: -4px 0 10px;
+}
+
+.review-subrating {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.85rem;
+  color: var(--ink-soft);
+}
+
+/* Puntuació total: la mitjana calculada, amb el valor al costat */
+.review-score {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.review-score-num {
+  color: var(--ink-soft);
+  font-size: 0.9rem;
+}
+
+.review-total-hint {
+  margin: -4px 0 0;
+}
+
+.review-ingredients {
+  margin: 0;
+}
+
+.picker-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.star-btn {
+  padding: 0 2px;
+  background: none;
+  border: 0;
+  font-size: 1.7rem;
+  line-height: 1;
+  color: var(--line);
+  cursor: pointer;
+}
+
+.star-btn.star-on {
+  color: var(--accent);
+}
+
+/* La targeta sencera és clicable a través del títol («stretched link»);
+   l'enllaç de la recepta queda per sobre i s'obre a part. */
+.review-card {
+  position: relative;
+}
+
+.card-title-link {
+  color: inherit;
+  text-decoration: none;
+}
+
+.card-title-link::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+}
+
+.review-body {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.review-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.review-thumb {
+  width: 64px;
+  height: 64px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+  flex-shrink: 0;
+}
+
+.review-url {
+  position: relative;
+}
+
+.review-notes {
+  margin: 0;
+  font-size: 0.9rem;
+  white-space: pre-line;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Camp de formulari que no és cap <label> (el selector d'estrelles) */
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.form-field-label {
+  font-family: var(--font-display);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.8rem;
+  color: var(--ink-soft);
 }
 
 /* ── Controls de pertinença (quantitat i «a sobre») ── */

@@ -26,6 +26,8 @@ export default function ItemForm() {
   const [specs, setSpecs] = useState<{ label: string; value: string }[]>(
     existing?.specs?.map((s) => ({ ...s })) ?? [],
   )
+  const [deprecated, setDeprecated] = useState(existing?.deprecated ?? false)
+  const [deprecatedReason, setDeprecatedReason] = useState(existing?.deprecatedReason ?? '')
 
   function setSpec(index: number, field: 'label' | 'value', text: string) {
     setSpecs(specs.map((s, i) => (i === index ? { ...s, [field]: text } : s)))
@@ -71,6 +73,8 @@ export default function ItemForm() {
           : Math.max(0, Math.round(Number(maxLoad.replace(',', '.')) * 1000)),
       needs: cleanNeeds.length > 0 ? cleanNeeds : undefined,
       specs: cleanSpecs.length > 0 ? cleanSpecs : undefined,
+      deprecated: deprecated || undefined,
+      deprecatedReason: deprecated ? deprecatedReason.trim() || undefined : undefined,
       notes: notes.trim(),
       photo: existing?.photo ?? null,
     }
@@ -213,6 +217,26 @@ export default function ItemForm() {
           {t('item.notes')}
           <textarea value={notes} onChange={(e) => setNotes(e.target.value)} rows={3} />
         </label>
+
+        <label className="check-row">
+          <input
+            type="checkbox"
+            checked={deprecated}
+            onChange={(e) => setDeprecated(e.target.checked)}
+          />
+          {t('item.deprecated')} <span className="hint">{t('form.deprecatedHint')}</span>
+        </label>
+
+        {deprecated && (
+          <label>
+            {t('form.deprecatedReason')}
+            <input
+              value={deprecatedReason}
+              onChange={(e) => setDeprecatedReason(e.target.value)}
+              placeholder={t('form.deprecatedReasonPlaceholder')}
+            />
+          </label>
+        )}
 
         <div className="actions">
           <button type="submit" className="btn btn-primary">

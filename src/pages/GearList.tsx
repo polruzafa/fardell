@@ -105,9 +105,15 @@ export default function GearList() {
                     <Link to={`/element/${item.id}`} className="row">
                       <span className="row-bar" style={{ background: category.color }} />
                       <span className="row-main">
-                        <span className="row-name">{item.name}</span>
-                        {item.tags.length > 0 && (
-                          <span className="row-tags">{item.tags.join(' · ')}</span>
+                        <span className={item.deprecated ? 'row-name row-name-deprecated' : 'row-name'}>
+                          {item.name}
+                        </span>
+                        {(item.deprecated || item.tags.length > 0) && (
+                          <span className="row-tags">
+                            {[item.deprecated ? t('item.deprecated').toLowerCase() : null, ...item.tags]
+                              .filter(Boolean)
+                              .join(' · ')}
+                          </span>
                         )}
                       </span>
                       <span className="mono row-weight">{formatWeight(item.weightGrams)}</span>

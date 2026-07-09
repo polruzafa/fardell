@@ -32,6 +32,10 @@ export type GearItem = {
   maxLoadGrams?: number
   /** Característiques lliures, només informatives («Capacidad: 750 ml», «R-value: 4,2»…). */
   specs?: { label: string; value: string }[]
+  /** Retirat: ja no es fa servir (trencat, substituït…), però se'n guarda la fitxa. */
+  deprecated?: boolean
+  /** Per què s'ha retirat. */
+  deprecatedReason?: string
   /**
    * Dependències per capacitat: etiquetes que algun ALTRE element del mateix
    * grup ha de tenir («fuel», «mechero»…). Si cap element les cobreix, la
@@ -67,11 +71,43 @@ export type Group = {
   groupIds: string[]
 }
 
+/** Ressenya d'un plat o recepta cuinats, amb el material emprat. */
+export type Review = {
+  id: string
+  /** Plat o recepta ressenyats. */
+  name: string
+  /** Sabor, d'1 a 5 estrelles. */
+  taste?: number
+  tasteNotes?: string
+  /** Com de fàcil ha estat la neteja, d'1 (malson) a 5 (res a fregar). */
+  cleaning?: number
+  cleaningNotes?: string
+  /** Preu, d'1 (car) a 5 (ben de preu); el `price` de sota és l'import. */
+  priceRating?: number
+  /** Dificultat, d'1 (molt complicat) a 5 (sense cap misteri). */
+  difficulty?: number
+  difficultyNotes?: string
+  /** Kits de cuina emprats. */
+  kitIds: string[]
+  /** Elements solts emprats, a banda dels kits. */
+  itemIds: string[]
+  /** Ingredients que no van amb el material («ceba», «brou»…). */
+  extraIngredients?: string[]
+  /** Preu aproximat dels ingredients, en euros. */
+  price?: number
+  notes: string
+  /** Enllaç a la recepta (web, vídeo…). */
+  url?: string
+  /** Data de la ressenya, en format ISO (aaaa-mm-dd). */
+  date: string
+}
+
 export type GearData = {
   schemaVersion: number
   categories: Category[]
   items: GearItem[]
   groups: Group[]
+  reviews: Review[]
 }
 
 export const BACKPACK_CATEGORY = 'mochilas'
@@ -98,6 +134,9 @@ export type Action =
   | { type: 'group/setItemQty'; groupId: string; itemId: string; qty: number }
   | { type: 'group/cycleWorn'; groupId: string; itemId: string }
   | { type: 'group/toggleGroup'; groupId: string; childId: string }
+  | { type: 'review/add'; review: Review }
+  | { type: 'review/update'; review: Review }
+  | { type: 'review/delete'; id: string }
   | { type: 'data/import'; data: GearData }
   | { type: 'data/reset' }
 
@@ -126,6 +165,10 @@ function reducer(data: GearData, action: Action): GearData {
           backpackId: g.backpackId === action.id ? null : g.backpackId,
           members: g.members.filter((m) => m.id !== action.id),
         })),
+        reviews: data.reviews.map((r) => ({
+          ...r,
+          itemIds: r.itemIds.filter((id) => id !== action.id),
+        })),
       }
     case 'category/add':
       return { ...data, categories: [...data.categories, action.category] }
@@ -151,6 +194,11 @@ function reducer(data: GearData, action: Action): GearData {
         groups: data.groups
           .filter((g) => g.id !== action.id)
           .map((g) => ({ ...g, groupIds: g.groupIds.filter((id) => id !== action.id) })),
+        // Les ressenyes que usaven el kit es queden sense ell, però no es perden.
+        reviews: data.reviews.map((r) => ({
+          ...r,
+          kitIds: r.kitIds.filter((id) => id !== action.id),
+        })),
       }
     case 'group/addItem':
       return updateGroup(data, action.groupId, (g) =>
@@ -203,6 +251,15 @@ function reducer(data: GearData, action: Action): GearData {
           }
         }),
       }
+    case 'review/add':
+      return { ...data, reviews: [...data.reviews, action.review] }
+    case 'review/update':
+      return {
+        ...data,
+        reviews: data.reviews.map((r) => (r.id === action.review.id ? action.review : r)),
+      }
+    case 'review/delete':
+      return { ...data, reviews: data.reviews.filter((r) => r.id !== action.id) }
     case 'data/import':
       return action.data
     case 'data/reset':
@@ -303,6 +360,19 @@ function migrate(raw: Record<string, unknown>): GearData {
         ),
       })),
     }
+  }
+  // `reviews` es va afegir com a camp opcional (regla 1: sense apujar la
+  // versió); es completa si falta. Formes primerenques: el `kitId` passa a
+  // `kitIds` i la puntuació general `rating` desapareix (ara és la mitjana
+  // calculada de les altres; vegeu reviewScore).
+  if (!Array.isArray(data.reviews)) data = { ...data, reviews: [] }
+  data = {
+    ...data,
+    reviews: (data.reviews as any[]).map(({ kitId, rating, ...r }) => ({
+      ...r,
+      kitIds: r.kitIds ?? (kitId ? [kitId] : []),
+      itemIds: r.itemIds ?? [],
+    })),
   }
   return data as GearData
 }
@@ -521,6 +591,42 @@ export function groupUnmetNeeds(data: GearData, group: Group): UnmetNeed[] {
     if (unmet.length > 0) result.push({ item, needs: unmet })
   }
   return result
+}
+
+/**
+ * Categories que compten com a «material de cuina» a l'hora de proposar kits
+ * a les ressenyes: cuina pròpiament, foc, combustible i neteja (fregall,
+ * sabó…), que en un kit de cuinar hi van de bracet.
+ */
+export const COOKING_CATEGORY_IDS = new Set(['cocina', 'fuego', 'combustible', 'limpieza'])
+
+/** Cert si més del 75 % de les unitats del kit són material de cuina. */
+export function isCookingKit(data: GearData, group: Group): boolean {
+  let total = 0
+  let cooking = 0
+  for (const [id, m] of collectGroupMembers(data, group)) {
+    total += m.qty
+    const item = itemOf(data, id)
+    if (item && COOKING_CATEGORY_IDS.has(item.categoryId)) cooking += m.qty
+  }
+  return total > 0 && cooking / total > 0.75
+}
+
+/** Kits (grups sense motxilla) amb més d'un 75 % de material de cuina. */
+export function cookingKits(data: GearData): Group[] {
+  return data.groups.filter((g) => g.backpackId == null && isCookingKit(data, g))
+}
+
+/**
+ * Puntuació total d'una ressenya: la mitjana de les puntuacions posades
+ * (sabor, neteja, preu i dificultat), o null si no n'hi ha cap.
+ */
+export function reviewScore(review: Review): number | null {
+  const parts = [review.taste, review.cleaning, review.priceRating, review.difficulty].filter(
+    (n): n is number => n != null,
+  )
+  if (parts.length === 0) return null
+  return parts.reduce((sum, n) => sum + n, 0) / parts.length
 }
 
 /** Cert si `group` conté el grup `targetId`, directament o transitivament. */

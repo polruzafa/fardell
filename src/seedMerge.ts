@@ -60,6 +60,7 @@ export function mergeSeedData(base: GearData, user: GearData, seed: GearData): G
     categories: mergeCollection(base.categories, user.categories, seed.categories),
     items: mergeCollection(base.items, user.items, seed.items),
     groups: mergeCollection(base.groups, user.groups, seed.groups),
+    reviews: mergeCollection(base.reviews, user.reviews, seed.reviews),
   }
 
   // Higiene: cap referència a elements o grups que ja no existeixen.
@@ -71,8 +72,19 @@ export function mergeSeedData(base: GearData, user: GearData, seed: GearData): G
     members: g.members.filter((m) => itemIds.has(m.id)),
     groupIds: g.groupIds.filter((id) => groupIds.has(id) && id !== g.id),
   }))
+  merged.reviews = merged.reviews.map((r) => ({
+    ...r,
+    kitIds: r.kitIds.filter((id) => groupIds.has(id)),
+    itemIds: r.itemIds.filter((id) => itemIds.has(id)),
+  }))
   return merged
 }
 
 /** Base buida per a la primera fusió: conserva tot el que té l'usuari. */
-export const EMPTY_BASE: GearData = { schemaVersion: 0, categories: [], items: [], groups: [] }
+export const EMPTY_BASE: GearData = {
+  schemaVersion: 0,
+  categories: [],
+  items: [],
+  groups: [],
+  reviews: [],
+}

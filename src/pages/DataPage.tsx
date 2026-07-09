@@ -92,7 +92,12 @@ export default function DataPage() {
       )
       if (ok) {
         dispatch({ type: 'data/import', data: incoming })
-        void prunePhotos(new Set(incoming.items.map((it) => it.id)))
+        void prunePhotos(
+          new Set([
+            ...incoming.items.map((it) => it.id),
+            ...incoming.reviews.map((r) => r.id),
+          ]),
+        )
       }
     } catch {
       window.alert(t('data.importError'))
@@ -102,7 +107,9 @@ export default function DataPage() {
   function reset() {
     if (!window.confirm(t('data.resetConfirm'))) return
     dispatch({ type: 'data/reset' })
-    void prunePhotos(new Set(seedData.items.map((it) => it.id)))
+    void prunePhotos(
+      new Set([...seedData.items.map((it) => it.id), ...seedData.reviews.map((r) => r.id)]),
+    )
   }
 
   return (
@@ -121,6 +128,10 @@ export default function DataPage() {
         <div>
           <dt>{t('data.packs')}</dt>
           <dd className="mono">{data.groups.filter((g) => g.backpackId != null).length}</dd>
+        </div>
+        <div>
+          <dt>{t('data.reviews')}</dt>
+          <dd className="mono">{data.reviews.length}</dd>
         </div>
         <div>
           <dt>{t('data.totalWeight')}</dt>
