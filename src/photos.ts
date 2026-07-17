@@ -37,6 +37,18 @@ export function getPhoto(id: string): Promise<Blob | undefined> {
   return withStore('readonly', (s) => s.get(id) as IDBRequest<Blob | undefined>)
 }
 
+/** Nombre màxim de fotografies per ressenya. */
+export const MAX_REVIEW_PHOTOS = 3
+
+/**
+ * Claus de les fotografies d'una ressenya: la primera és l'id pelat (les
+ * fotografies velles, de quan només n'hi cabia una, queden a la primera
+ * posició sense cap migració) i la resta duen el sufix «#2», «#3»…
+ */
+export function photoKeys(id: string): string[] {
+  return Array.from({ length: MAX_REVIEW_PHOTOS }, (_, i) => (i === 0 ? id : `${id}#${i + 1}`))
+}
+
 export async function savePhoto(id: string, blob: Blob): Promise<void> {
   await withStore('readwrite', (s) => s.put(blob, id))
 }
@@ -45,12 +57,13 @@ export async function deletePhoto(id: string): Promise<void> {
   await withStore('readwrite', (s) => s.delete(id))
 }
 
-/** Esborra les fotografies d'elements que ja no existeixen (després d'importar o restaurar). */
+/** Esborra les fotografies d'elements que ja no existeixen (després d'importar
+ * o restaurar). Les claus amb sufix («id#2», «id#3»…) valen pel seu id base. */
 export async function prunePhotos(validIds: Set<string>): Promise<void> {
   const keys = await withStore('readonly', (s) => s.getAllKeys())
   await Promise.all(
     keys
-      .filter((k): k is string => typeof k === 'string' && !validIds.has(k))
+      .filter((k): k is string => typeof k === 'string' && !validIds.has(k.split('#')[0]))
       .map((k) => deletePhoto(k)),
   )
 }
@@ -108,4 +121,31 @@ export function usePhoto(id: string | undefined) {
   }, [id, version])
 
   return { url, refresh: () => setVersion((v) => v + 1) }
+}
+
+/** URLs de diverses fotografies alhora (null on no n'hi ha). Per a claus
+ * sense id (ressenya nova, encara sense desar) retorna null directament. */
+export function usePhotos(ids: (string | undefined)[]): (string | null)[] {
+  const [urls, setUrls] = useState<(string | null)[]>(() => ids.map(() => null))
+  const key = ids.join('|')
+
+  useEffect(() => {
+    let cancelled = false
+    let objectUrls: (string | null)[] = []
+    void Promise.all(
+      ids.map((id) => (id ? getPhoto(id).catch(() => undefined) : Promise.resolve(undefined))),
+    ).then((blobs) => {
+      if (cancelled) return
+      objectUrls = blobs.map((blob) => (blob ? URL.createObjectURL(blob) : null))
+      setUrls(objectUrls)
+    })
+    return () => {
+      cancelled = true
+      for (const u of objectUrls) if (u) URL.revokeObjectURL(u)
+    }
+    // Les claus canvien totes juntes: n'hi ha prou amb la cadena concatenada.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [key])
+
+  return urls
 }

@@ -2,7 +2,14 @@ import { useEffect, useMemo, useRef, useState, type FormEvent } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { StarPicker, StarRating } from '../components/Stars'
 import { getLocale, useI18n } from '../i18n'
-import { deletePhoto, downscale, savePhoto, usePhoto } from '../photos'
+import {
+  deletePhoto,
+  downscale,
+  MAX_REVIEW_PHOTOS,
+  photoKeys,
+  savePhoto,
+  usePhotos,
+} from '../photos'
 import {
   BACKPACK_CATEGORY,
   categoryOf,
@@ -51,21 +58,34 @@ export default function ReviewForm() {
   const [picking, setPicking] = useState(false)
   const [pickQuery, setPickQuery] = useState('')
 
-  // La fotografia triada no es desa fins que es desa la ressenya: així una
-  // ressenya nova cancel·lada no deixa cap foto orfe a IndexedDB.
-  const stored = usePhoto(existing?.id)
-  const [pendingPhoto, setPendingPhoto] = useState<Blob | null>(null)
-  const [pendingUrl, setPendingUrl] = useState<string | null>(null)
-  const [photoRemoved, setPhotoRemoved] = useState(false)
+  // Fins a MAX_REVIEW_PHOTOS fotografies (embalatge, cocció, resultat…), en
+  // caselles independents. Les triades no es desen fins que es desa la
+  // ressenya: així una ressenya nova cancel·lada no deixa cap foto orfe a
+  // IndexedDB.
+  type PhotoSlot = { pending: Blob | null; pendingUrl: string | null; removed: boolean }
+  const storedUrls = usePhotos(
+    existing ? photoKeys(existing.id) : Array.from({ length: MAX_REVIEW_PHOTOS }, () => undefined),
+  )
+  const [slots, setSlots] = useState<PhotoSlot[]>(() =>
+    Array.from({ length: MAX_REVIEW_PHOTOS }, () => ({
+      pending: null,
+      pendingUrl: null,
+      removed: false,
+    })),
+  )
   const [savingPhoto, setSavingPhoto] = useState(false)
   const fileInput = useRef<HTMLInputElement>(null)
+  const pickingSlot = useRef(0)
 
-  // En canviar de foto (o en desmuntar) es revoca l'URL d'objecte anterior.
+  // Els URL d'objecte es revoquen quan es reemplaça la foto d'una casella
+  // (dins del setter) i, els que quedin vius, en desmuntar el formulari.
+  const slotsRef = useRef(slots)
+  slotsRef.current = slots
   useEffect(
     () => () => {
-      if (pendingUrl) URL.revokeObjectURL(pendingUrl)
+      for (const s of slotsRef.current) if (s.pendingUrl) URL.revokeObjectURL(s.pendingUrl)
     },
-    [pendingUrl],
+    [],
   )
 
   const q = pickQuery.trim().toLowerCase()
@@ -105,7 +125,7 @@ export default function ReviewForm() {
     )
   }
 
-  const previewUrl = pendingUrl ?? (photoRemoved ? null : stored.url)
+  const previews = slots.map((s, i) => s.pendingUrl ?? (s.removed ? null : storedUrls[i]))
   const selectedKits = kitIds
     .map((kitId) => groupOf(data, kitId))
     .filter((g): g is Group => Boolean(g))
@@ -123,13 +143,23 @@ export default function ReviewForm() {
       ? ratingParts.reduce((sum, n) => sum + n, 0) / ratingParts.length
       : null
 
-  async function onPhotoPicked(file: File) {
+  function pickPhoto(index: number) {
+    pickingSlot.current = index
+    fileInput.current?.click()
+  }
+
+  async function onPhotoPicked(index: number, file: File) {
     setSavingPhoto(true)
     try {
       const blob = await downscale(file)
-      setPendingPhoto(blob)
-      setPendingUrl(URL.createObjectURL(blob))
-      setPhotoRemoved(false)
+      const url = URL.createObjectURL(blob)
+      setSlots((prev) =>
+        prev.map((s, i) => {
+          if (i !== index) return s
+          if (s.pendingUrl) URL.revokeObjectURL(s.pendingUrl)
+          return { pending: blob, pendingUrl: url, removed: false }
+        }),
+      )
     } catch {
       window.alert(t('item.photoError'))
     } finally {
@@ -137,10 +167,14 @@ export default function ReviewForm() {
     }
   }
 
-  function removePhoto() {
-    setPendingPhoto(null)
-    setPendingUrl(null)
-    setPhotoRemoved(true)
+  function removePhoto(index: number) {
+    setSlots((prev) =>
+      prev.map((s, i) => {
+        if (i !== index) return s
+        if (s.pendingUrl) URL.revokeObjectURL(s.pendingUrl)
+        return { pending: null, pendingUrl: null, removed: true }
+      }),
+    )
   }
 
   async function save(e: FormEvent) {
@@ -171,8 +205,12 @@ export default function ReviewForm() {
       date: existing?.date ?? new Date().toISOString().slice(0, 10),
     }
     try {
-      if (pendingPhoto) await savePhoto(review.id, pendingPhoto)
-      else if (photoRemoved && existing) await deletePhoto(existing.id)
+      const keys = photoKeys(review.id)
+      for (let i = 0; i < keys.length; i++) {
+        const slot = slots[i]
+        if (slot.pending) await savePhoto(keys[i], slot.pending)
+        else if (slot.removed && existing) await deletePhoto(keys[i])
+      }
     } catch {
       window.alert(t('item.photoError'))
     }
@@ -183,7 +221,7 @@ export default function ReviewForm() {
   function remove() {
     if (!existing) return
     if (!window.confirm(t('review.confirmDelete', { name: existing.name }))) return
-    void deletePhoto(existing.id)
+    for (const key of photoKeys(existing.id)) void deletePhoto(key)
     dispatch({ type: 'review/delete', id: existing.id })
     navigate('/menjar')
   }
@@ -487,37 +525,47 @@ export default function ReviewForm() {
         </label>
 
         <div className="form-field">
-          <span className="form-field-label">{t('item.photo')}</span>
-          <div className="photo-slot" aria-label={t('item.photo')}>
-            {previewUrl ? (
-              <img src={previewUrl} alt={name} />
-            ) : (
-              <button
-                type="button"
-                className="photo-add"
-                disabled={savingPhoto}
-                onClick={() => fileInput.current?.click()}
-              >
-                {savingPhoto ? '…' : t('item.addPhoto')}
-              </button>
+          <span className="form-field-label">
+            {t('review.photos')} <span className="hint">{t('review.photosHint')}</span>
+          </span>
+          <div className="photo-grid">
+            {previews.map((url, i) =>
+              url ? (
+                <div key={i} className="photo-cell photo-cell-filled">
+                  <button
+                    type="button"
+                    className="photo-cell-img"
+                    disabled={savingPhoto}
+                    aria-label={t('item.changePhoto')}
+                    onClick={() => pickPhoto(i)}
+                  >
+                    <img src={url} alt="" />
+                  </button>
+                  <button
+                    type="button"
+                    className="photo-cell-remove"
+                    aria-label={t('item.deletePhoto')}
+                    onClick={() => removePhoto(i)}
+                  >
+                    ×
+                  </button>
+                </div>
+              ) : (
+                <div key={i} className="photo-cell">
+                  <button
+                    type="button"
+                    className="photo-add"
+                    disabled={savingPhoto}
+                    aria-label={t('item.addPhoto')}
+                    onClick={() => pickPhoto(i)}
+                  >
+                    {savingPhoto ? '…' : '+'}
+                  </button>
+                </div>
+              ),
             )}
           </div>
-          {previewUrl && (
-            <div className="actions photo-actions">
-              <button
-                type="button"
-                className="btn btn-small"
-                disabled={savingPhoto}
-                onClick={() => fileInput.current?.click()}
-              >
-                {t('item.changePhoto')}
-              </button>
-              <button type="button" className="btn btn-small" onClick={removePhoto}>
-                {t('item.deletePhoto')}
-              </button>
-              <span className="hint">{t('item.photoLocalHint')}</span>
-            </div>
-          )}
+          <span className="hint">{t('review.photosLocalHint')}</span>
           <input
             ref={fileInput}
             type="file"
@@ -525,7 +573,7 @@ export default function ReviewForm() {
             hidden
             onChange={(e) => {
               const file = e.target.files?.[0]
-              if (file) void onPhotoPicked(file)
+              if (file) void onPhotoPicked(pickingSlot.current, file)
               e.target.value = ''
             }}
           />

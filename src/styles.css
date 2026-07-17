@@ -262,19 +262,23 @@ body {
   right: 0;
   display: flex;
   justify-content: center;
-  gap: 8px;
+  gap: 4px;
   background: var(--card);
   border-top: 1px solid var(--line);
   padding: 6px 8px calc(6px + env(safe-area-inset-bottom));
 }
 
+/* Amb cinc pestanyes cal repartir l'amplada: cadascuna s'encongeix
+   fins on faci falta en lloc de sobreeixir en pantalles estretes. */
 .tab {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 2px;
-  min-width: 64px;
-  padding: 6px 8px;
+  flex: 1 1 0;
+  min-width: 0;
+  max-width: 88px;
+  padding: 6px 4px;
   border-radius: var(--radius);
   color: var(--ink-soft);
   text-decoration: none;
@@ -282,11 +286,21 @@ body {
   font-size: 0.8rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .tab-icon {
   width: 22px;
   height: 22px;
+}
+
+@media (max-width: 420px) {
+  .tab {
+    font-size: 0.68rem;
+    letter-spacing: 0.05em;
+  }
 }
 
 .tab.active {
@@ -1000,6 +1014,68 @@ h2 {
   flex-wrap: wrap;
 }
 
+/* Caselles de fotografia de les ressenyes (fins a 3). */
+.photo-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin: 8px 0 6px;
+}
+
+.photo-cell {
+  position: relative;
+  aspect-ratio: 1;
+  border: 1.5px dashed var(--line);
+  border-radius: var(--radius);
+  overflow: hidden;
+  display: flex;
+}
+
+.photo-cell-filled {
+  border-style: solid;
+}
+
+.photo-cell .photo-add {
+  font-size: 1.4rem;
+}
+
+.photo-cell-img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+
+.photo-cell-img img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.photo-cell-remove {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 1px solid var(--line);
+  background: var(--card);
+  color: var(--ink);
+  font-size: 0.95rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.photo-cell-remove:hover {
+  border-color: var(--danger);
+  color: var(--danger);
+}
+
 .detail-name {
   margin-bottom: 0.2em;
 }
@@ -1305,6 +1381,13 @@ h2 {
   gap: 10px;
 }
 
+.review-thumbs {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
 .review-thumb {
   width: 64px;
   height: 64px;
@@ -1318,7 +1401,8 @@ h2 {
   position: relative;
 }
 
-.review-notes {
+.review-notes,
+.trip-notes {
   margin: 0;
   font-size: 0.9rem;
   white-space: pre-line;
@@ -1327,6 +1411,84 @@ h2 {
   line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
+}
+
+/* ── Sortides ── */
+
+.trip-card {
+  position: relative;
+}
+
+.trip-packs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0 0 10px;
+}
+
+.trip-notes {
+  margin-top: 2px;
+}
+
+/* Error de validació d'un camp (les coordenades) */
+.field-error {
+  margin: -6px 0 0;
+  font-size: 0.85rem;
+  color: var(--danger);
+}
+
+/* Pronòstic del temps dels dies de la sortida */
+.forecast {
+  margin-top: 12px;
+  padding-top: 8px;
+  border-top: 1px solid var(--line);
+}
+
+.forecast-days {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.forecast-day {
+  display: grid;
+  grid-template-columns: 3.4em 20px minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.85rem;
+}
+
+.forecast-date {
+  color: var(--ink-soft);
+}
+
+.forecast-icon {
+  width: 18px;
+  height: 18px;
+  color: var(--ink-soft);
+}
+
+.forecast-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.forecast-extra {
+  color: var(--ink-soft);
+  text-align: right;
+}
+
+.forecast-temps {
+  text-align: right;
+}
+
+.forecast-source {
+  margin: 6px 0 0;
+  font-size: 0.75rem;
 }
 
 /* Camp de formulari que no és cap <label> (el selector d'estrelles) */

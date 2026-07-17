@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 import { StarRating } from '../components/Stars'
 import { getLocale, useI18n } from '../i18n'
-import { usePhoto } from '../photos'
+import { photoKeys, usePhotos } from '../photos'
 import {
   categoryOf,
   groupOf,
@@ -25,7 +25,7 @@ function urlHost(url: string): string {
 
 function ReviewCard({ data, review }: { data: GearData; review: Review }) {
   const { t } = useI18n()
-  const { url: photoUrl } = usePhoto(review.id)
+  const photoUrls = usePhotos(photoKeys(review.id)).filter((u): u is string => u != null)
 
   const kits = review.kitIds
     .map((kitId) => groupOf(data, kitId))
@@ -108,7 +108,13 @@ function ReviewCard({ data, review }: { data: GearData; review: Review }) {
             </a>
           )}
         </div>
-        {photoUrl && <img className="review-thumb" src={photoUrl} alt="" />}
+        {photoUrls.length > 0 && (
+          <div className="review-thumbs">
+            {photoUrls.map((url, i) => (
+              <img key={i} className="review-thumb" src={url} alt="" />
+            ))}
+          </div>
+        )}
       </div>
     </div>
   )

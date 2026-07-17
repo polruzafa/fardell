@@ -103,12 +103,32 @@ export type Review = {
   date: string
 }
 
+/** Una sortida: les dates, el lloc i les motxilles preparades que hi van. */
+export type Trip = {
+  id: string
+  name: string
+  /** Primer dia, en format ISO (aaaa-mm-dd). */
+  startDate: string
+  /** Últim dia; si falta, la sortida és d'un sol dia. */
+  endDate?: string
+  /** Lloc de la sortida («Vall de Núria», «serra del Cadí»…). */
+  place?: string
+  /** Coordenades del lloc, per al pronòstic del temps. */
+  lat?: number
+  lon?: number
+  /** Motxilles preparades que van a la sortida. */
+  groupIds: string[]
+  /** Pla de ruta abans de sortir; en tornar, què va faltar o sobrava. */
+  notes: string
+}
+
 export type GearData = {
   schemaVersion: number
   categories: Category[]
   items: GearItem[]
   groups: Group[]
   reviews: Review[]
+  trips: Trip[]
 }
 
 export const BACKPACK_CATEGORY = 'mochilas'
@@ -141,6 +161,9 @@ export type Action =
   | { type: 'review/add'; review: Review }
   | { type: 'review/update'; review: Review }
   | { type: 'review/delete'; id: string }
+  | { type: 'trip/add'; trip: Trip }
+  | { type: 'trip/update'; trip: Trip }
+  | { type: 'trip/delete'; id: string }
   | { type: 'data/import'; data: GearData }
   | { type: 'data/reset' }
 
@@ -203,6 +226,11 @@ function reducer(data: GearData, action: Action): GearData {
           ...r,
           kitIds: r.kitIds.filter((id) => id !== action.id),
         })),
+        // Igual amb les sortides que duien la motxilla.
+        trips: data.trips.map((tr) => ({
+          ...tr,
+          groupIds: tr.groupIds.filter((id) => id !== action.id),
+        })),
       }
     case 'group/addItem':
       return updateGroup(data, action.groupId, (g) =>
@@ -264,6 +292,15 @@ function reducer(data: GearData, action: Action): GearData {
       }
     case 'review/delete':
       return { ...data, reviews: data.reviews.filter((r) => r.id !== action.id) }
+    case 'trip/add':
+      return { ...data, trips: [...data.trips, action.trip] }
+    case 'trip/update':
+      return {
+        ...data,
+        trips: data.trips.map((tr) => (tr.id === action.trip.id ? action.trip : tr)),
+      }
+    case 'trip/delete':
+      return { ...data, trips: data.trips.filter((tr) => tr.id !== action.id) }
     case 'data/import':
       return action.data
     case 'data/reset':
@@ -378,6 +415,8 @@ function migrate(raw: Record<string, unknown>): GearData {
       itemIds: r.itemIds ?? [],
     })),
   }
+  // `trips` també es va afegir com a camp opcional (regla 1): es completa si falta.
+  if (!Array.isArray(data.trips)) data = { ...data, trips: [] }
   return data as GearData
 }
 /* eslint-enable @typescript-eslint/no-explicit-any */
@@ -446,6 +485,25 @@ export function itemOf(data: GearData, id: string): GearItem | undefined {
 
 export function groupOf(data: GearData, id: string): Group | undefined {
   return data.groups.find((g) => g.id === id)
+}
+
+/** El dia d'avui en format ISO (aaaa-mm-dd), en hora local. */
+export function todayISO(): string {
+  const d = new Date()
+  const mm = String(d.getMonth() + 1).padStart(2, '0')
+  const dd = String(d.getDate()).padStart(2, '0')
+  return `${d.getFullYear()}-${mm}-${dd}`
+}
+
+/** Últim dia de la sortida (el primer, si és d'un sol dia). */
+export function tripEndDate(trip: Trip): string {
+  return trip.endDate ?? trip.startDate
+}
+
+/** Dies que dura la sortida (com a mínim, 1). */
+export function tripDays(trip: Trip): number {
+  const ms = new Date(tripEndDate(trip)).getTime() - new Date(trip.startDate).getTime()
+  return Math.max(1, Math.round(ms / 86_400_000) + 1)
 }
 
 /** Ruta d'un grup: les motxilles i els kits tenen llistes separades. */

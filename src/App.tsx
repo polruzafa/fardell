@@ -13,6 +13,8 @@ import Packs from './pages/Packs'
 import ReviewForm from './pages/ReviewForm'
 import ReviewsPage from './pages/ReviewsPage'
 import SettingsPage from './pages/SettingsPage'
+import TripForm from './pages/TripForm'
+import TripsPage from './pages/TripsPage'
 
 function Layout() {
   const { t } = useI18n()
@@ -48,6 +50,10 @@ function Layout() {
           <TabIcon kind="pack" />
           {t('tabs.packs')}
         </NavLink>
+        <NavLink to="/sortides" className="tab">
+          <TabIcon kind="trip" />
+          {t('tabs.trips')}
+        </NavLink>
         <NavLink to="/menjar" className="tab">
           <TabIcon kind="review" />
           {t('tabs.reviews')}
@@ -57,11 +63,12 @@ function Layout() {
   )
 }
 
-function TabIcon({ kind }: { kind: 'gear' | 'kit' | 'pack' | 'review' }) {
+function TabIcon({ kind }: { kind: 'gear' | 'kit' | 'pack' | 'trip' | 'review' }) {
   const paths = {
     gear: 'M4 7h16M4 12h16M4 17h10',
     kit: 'M12 3l8 4.5v9L12 21l-8-4.5v-9L12 3Zm0 9v9m0-9L4 7.5M12 12l8-4.5',
     pack: 'M8 7V5a4 4 0 0 1 8 0v2m-9 0h10a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2Zm1 7h8',
+    trip: 'M3 18h18M5.5 18 10 9.5l3 5.5M12 18l3.8-6.5L19.5 18',
     review: 'M4 13a8 8 0 0 0 16 0H4Zm-1 0h18M9 9V6m3 3V5m3 4V6',
   }
   return (
@@ -92,6 +99,9 @@ export default function App() {
                   <Route path="menjar" element={<ReviewsPage />} />
                   <Route path="menjar/nova" element={<ReviewForm />} />
                   <Route path="menjar/:id" element={<ReviewForm />} />
+                  <Route path="sortides" element={<TripsPage />} />
+                  <Route path="sortides/nova" element={<TripForm />} />
+                  <Route path="sortides/:id" element={<TripForm />} />
                   {/* Rutes velles: la pàgina de dades es va fondre dins dels
                       Ajustos, i «receptes» es va reanomenar «menjar». */}
                   <Route path="dades" element={<Navigate to="/ajustos" replace />} />

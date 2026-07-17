@@ -314,6 +314,10 @@ function StatsSection() {
         <dd className="mono">{data.reviews.length}</dd>
       </div>
       <div>
+        <dt>{t('data.trips')}</dt>
+        <dd className="mono">{data.trips.length}</dd>
+      </div>
+      <div>
         <dt>{t('data.totalWeight')}</dt>
         <dd className="mono">{formatWeight(totalWeight)}</dd>
       </div>
